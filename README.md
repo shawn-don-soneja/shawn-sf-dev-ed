@@ -2,7 +2,7 @@ All SFDX commands should be run from within sfdc-shawn-dev-ed\shawn-dev-ed
 
 <b>To Deploy</b>
 sfdx force source deploy -p force-app/main/default/lwc/marketMetrics
-from \sfdc-shawn-dev-ed\shawn-dev-ed>
+from \shawn-dev-ed>
 
 # Salesforce DX Project: Next Steps
 
