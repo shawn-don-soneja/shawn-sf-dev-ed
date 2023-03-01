@@ -1,22 +1,32 @@
 // helloWorld.js
 import { LightningElement, wire, track, api } from 'lwc';
+import getFinancialData from '@salesforce/apex/FinancialDataManager.getFinancialData';
 
 //table columns for bureau of labor statistics callout
 const columns_bls = [
-    { label: 'Price', fieldName: 'value' },
-    { label: 'Month', fieldName: 'periodName'},
-    { label: 'Year', fieldName: 'year'},
+    { label: 'Price', fieldName: 'Value__c' },
+    { label: 'Date', fieldName: 'Date__c'},
 ];
 
 export default class HelloWorld extends LightningElement {
   @track data; //variable for table's data
   @track isLoading = true;
+  //@wire (getFinancialData, {}) financialData; 
 
   //headers of table - other is columns_bls
   columns = columns_bls;
   
   connectedCallback() {
-    this.callBureauOfLaborStatistics();
+    //this.callBureauOfLaborStatistics();
+    getFinancialData()
+      .then(result => {
+        this.data = result;
+        this.isLoading = false;
+      })
+      .catch(error => {
+        console.log('error' + JSON.stringify(error));
+        this.isLoading = false;
+    });
   }
   renderedCallback(){
     //console.log('rendered');

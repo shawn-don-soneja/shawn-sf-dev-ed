@@ -31,10 +31,12 @@
       </header>
     </div>
     <div class="slds-card__body slds-card__body_inner">Price of Rice</div>
-    <div class="slds-scrollable--y" style="height: 300px">
-      <lightning-datatable key-field="id" data={data} columns={columns}>
-      </lightning-datatable>
-    </div>
+    <template if:true={data}>
+      <div class="slds-scrollable--y" style="height: 300px">
+        <lightning-datatable key-field="id" data={data} columns={columns}>
+        </lightning-datatable>
+      </div>
+    </template>
     <!--
     <footer class="slds-card__footer">
     <a class="slds-card__footer-action" href="#">View All
