@@ -1,7 +1,7 @@
 // helloWorld.js
 import { LightningElement, wire, track, api } from 'lwc';
 import getFinancialData from '@salesforce/apex/FinancialDataManager.getFinancialData';
-import chartjs from '@salesforce/resourceUrl/chartjs_v280';
+
 import { loadStyle, loadScript } from 'lightning/platformResourceLoader';
  
 //table columns for bureau of labor statistics callout
