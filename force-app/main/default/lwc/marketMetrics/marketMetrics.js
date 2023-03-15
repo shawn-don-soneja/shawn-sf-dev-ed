@@ -1,7 +1,9 @@
 // helloWorld.js
 import { LightningElement, wire, track, api } from 'lwc';
 import getFinancialData from '@salesforce/apex/FinancialDataManager.getFinancialData';
-
+import chartjs from '@salesforce/resourceUrl/chartjs_v280';
+import { loadStyle, loadScript } from 'lightning/platformResourceLoader';
+ 
 //table columns for bureau of labor statistics callout
 const columns_bls = [
     { label: 'Price', fieldName: 'Value__c' },
@@ -9,7 +11,8 @@ const columns_bls = [
 ];
 
 export default class HelloWorld extends LightningElement {
-  @track data; //variable for table's data
+  @track unemploymentData; 
+  @track inflationData;
   @track isLoading = true;
   //@wire (getFinancialData, {}) financialData; 
 
@@ -20,6 +23,8 @@ export default class HelloWorld extends LightningElement {
     //this.callBureauOfLaborStatistics();
     getFinancialData()
       .then(result => {
+        this.unemploymentData = result.filter((eachItem) => eachItem.Type__c == 'Unemployment');
+        this.inflationData = result.filter((eachItem) => eachItem.Type__c == 'CPI');
         this.data = result;
         this.isLoading = false;
       })

@@ -1,6 +1,8 @@
 <!-- helloWorld.html -->
+
 <template>
-  <p>Bureau of Labor Statistics:<br/></p>
+  
+  <p>Bureau of Labor Statisticss:<br/></p>
   <template if:true={isLoading}>
     <lightning-spinner alternative-text="Loading" variant="brand" size="large">
     </lightning-spinner>
@@ -31,9 +33,9 @@
       </header>
     </div>
     <div class="slds-card__body slds-card__body_inner">Price of Rice</div>
-    <template if:true={data}>
+    <template if:true={inflationData}>
       <div class="slds-scrollable--y" style="height: 300px">
-        <lightning-datatable key-field="id" data={data} columns={columns}>
+        <lightning-datatable key-field="id" data={inflationData} columns={columns}>
         </lightning-datatable>
       </div>
     </template>
@@ -45,5 +47,73 @@
     </footer>
     -->
   </article>
-
+  <article class="slds-card">
+    <div class="slds-card__header slds-grid">
+      <header class="slds-media slds-media_center slds-has-flexi-truncate">
+        <div class="slds-media__figure">
+          <span class="slds-icon_container slds-icon-standard-account" title="account">
+          <svg class="slds-icon slds-icon_small" aria-hidden="true">
+            <use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#account"></use>
+          </svg>
+          <span class="slds-assistive-text">Unemployment Tracker</span>
+          </span>
+        </div>
+        <div class="slds-media__body">
+          <h2 class="slds-card__header-title">
+            <p href="#" class="slds-card__header-link slds-truncate" title="Unemployment Tracker">
+              Unemployment Tracker
+            </p>
+          </h2>
+        </div>
+        <!-- 
+        <div class="slds-no-flex">
+          <button class="slds-button slds-button_neutral">Refresh</button>
+        </div>
+        -->
+      </header>
+    </div>
+    <div class="slds-card__body slds-card__body_inner">Local Area Unemployment</div>
+    <template if:true={unemploymentData}>
+      <div class="slds-scrollable--y" style="height: 300px">
+        <c-chart slot="chartExample" type="line" responsive="true">
+          <c-dataset
+            labels='["January", "February", "March", "April", "May", "June", "July"]'
+          >
+            <c-data
+              label="My First dataset"
+              detail="[10, 30, 46, 2, 8, 50, 0]"
+              bordercolor="rgba(119, 185, 242, 1)"
+              backgroundcolor="rgba(119, 185, 242, 0.2)"
+            ></c-data>
+          </c-dataset>
+          <c-title text="Line Chart"></c-title>
+        </c-chart>
+        <code slot="chartCode" lang="html">
+          &lt;c-chart type=&quot;line&quot; responsive=&quot;true&quot;&gt;<br />
+          &emsp;&lt;c-dataset labels=&#39;[&quot;January&quot;,
+          &quot;February&quot;, &quot;March&quot;, &quot;April&quot;,
+          &quot;May&quot;, &quot;June&quot;, &quot;July&quot;]&#39;&gt;<br />
+          &emsp;&emsp;&lt;c-data label=&quot;My First dataset&quot;
+          detail=&quot;[10, 30, 46, 2, 8, 50, 0]&quot; bordercolor=&quot;rgba(119,
+          185, 242, 1)&quot;<br />
+          &emsp;&emsp;backgroundcolor=&quot;rgba(119, 185, 242,
+          0.2)&quot;&gt;&lt;/c-data&gt;<br />
+          &emsp;&lt;/c-dataset&gt;<br />
+          &emsp;&lt;c-title text=&quot;Line Chart&quot;&gt;&lt;/c-title&gt;<br />
+          &lt;/c-chart&gt;
+        </code>
+        <lightning-datatable key-field="id" data={unemploymentData} columns={columns}>
+        </lightning-datatable>
+      </div>
+    </template>
+    <!--
+    <footer class="slds-card__footer">
+    <a class="slds-card__footer-action" href="#">View All
+      <span class="slds-assistive-text">Accounts</span>
+    </a>
+    </footer>
+    -->
+  </article>
+  
+  I'm here
 </template>

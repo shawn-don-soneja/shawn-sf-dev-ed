@@ -1,0 +1,811 @@
+<template>
+  <div class="slds-grid">
+    <div class="slds-col slds-size_1-of-1 slds-p-bottom_medium">
+      <div class="slds-button-group slds-align_absolute-center" role="group">
+        <button
+          class="slds-button slds-button_neutral"
+          onclick={displayAllCharts}
+        >
+          All
+        </button>
+        <template for:each={filterTypes} for:item="item">
+          <button
+            class="slds-button slds-button_neutral"
+            key={item}
+            data-value={item}
+            onclick={displayFilteredCharts}
+          >
+            {item}
+          </button>
+        </template>
+      </div>
+    </div>
+  </div>
+
+  <!-- Samples -->
+  <div class="container" style="text-align: center">
+    <!--
+      <c-sample-app-item>
+        <c-chart slot="chartExample" type="bar" responsive="true">
+        </c-chart>
+  
+        <code slot="chartCode" lang="html">
+          XML escaped
+          Escape curly bracets: 
+            { = &#123;
+            } = &#125;
+          Reolace breaklines by <br>
+          Replace tabulations by &emsp;
+        </code>
+      </c-sample-app-item>
+      -->
+
+    <!-- Bar chart -->
+    <c-sample-app-item>
+      <c-chart
+        slot="chartExample"
+        type="bar"
+        responsive="true"
+        stylecss="position: relative; margin: auto;"
+        events='["click"]'
+      >
+        <c-dataset
+          labels='["Blue", "Orange", "Yellow", "Green", "Light Blue", "Purple"]'
+        >
+          <c-data
+            label="# of Votes"
+            detail="[12, 19, 7, 9, 5, 15]"
+            backgroundcolor='[
+                "rgba(82, 183, 216, 0.2)",
+                "rgba(225, 96, 50, 0.2)",
+                "rgba(255, 176, 59, 0.2)",
+                "rgba(84, 167, 123, 0.2)",
+                "rgba(79, 210, 210, 0.2)",
+                "rgba(226, 135, 178, 0.2)"
+              ]'
+            bordercolor='[
+                  "rgba(82, 183, 216, 1)",
+                  "rgba(225, 96, 50, 1)",
+                  "rgba(255, 176, 59, 1)",
+                  "rgba(84, 167, 123, 1)",
+                  "rgba(79, 210, 210, 1)",
+                  "rgba(226, 135, 178, 1)"
+              ]'
+            borderwidth="1"
+          ></c-data>
+        </c-dataset>
+        <c-title text="Bar Chart"></c-title>
+        <c-legend position="right"></c-legend>
+        <c-animation duration="2000" easing="easeInBounce"> </c-animation>
+        <c-cartesian-category-axis
+          axis="x"
+          position="top"
+        ></c-cartesian-category-axis>
+      </c-chart>
+
+      <code slot="chartCode" lang="html">
+        &lt;c-chart type=&quot;bar&quot; responsive=&quot;true&quot;
+        stylecss=&quot;position: relative; margin: auto;&quot;
+        events=&#39;[&quot;click&quot;]&#39;&gt;<br />
+        &emsp;&lt;c-dataset labels=&#39;[&quot;Blue&quot;, &quot;Orange&quot;,
+        &quot;Yellow&quot;, &quot;Green&quot;, &quot;Light Blue&quot;,
+        &quot;Purple&quot;]&#39;&gt;<br />
+        &emsp;&emsp;&lt;c-data label=&quot;# of Votes&quot; detail=&quot;[12,
+        19, 7, 9, 5, 15]&quot; backgroundcolor=&#39;[<br />
+        &emsp;&emsp;&emsp;&quot;rgba(82, 183, 216, 0.2)&quot;,<br />
+        &emsp;&emsp;&emsp;&quot;rgba(225, 96, 50, 0.2)&quot;,<br />
+        &emsp;&emsp;&emsp;&quot;rgba(255, 176, 59, 0.2)&quot;,<br />
+        &emsp;&emsp;&emsp;&quot;rgba(84, 167, 123, 0.2)&quot;,<br />
+        &emsp;&emsp;&emsp;&quot;rgba(79, 210, 210, 0.2)&quot;,<br />
+        &emsp;&emsp;&emsp;&quot;rgba(226, 135, 178, 0.2)&quot;<br />
+        &emsp;&emsp;&emsp;]&#39; bordercolor=&#39;[<br />
+        &emsp;&emsp;&emsp;&emsp;&quot;rgba(82, 183, 216, 1)&quot;,<br />
+        &emsp;&emsp;&emsp;&emsp;&quot;rgba(225, 96, 50, 1)&quot;,<br />
+        &emsp;&emsp;&emsp;&emsp;&quot;rgba(255, 176, 59, 1)&quot;,<br />
+        &emsp;&emsp;&emsp;&emsp;&quot;rgba(84, 167, 123, 1)&quot;,<br />
+        &emsp;&emsp;&emsp;&emsp;&quot;rgba(79, 210, 210, 1)&quot;,<br />
+        &emsp;&emsp;&emsp;&emsp;&quot;rgba(226, 135, 178, 1)&quot;<br />
+        &emsp;&emsp;&emsp;]&#39; borderwidth=&quot;1&quot;&gt;&lt;/c-data&gt;<br />
+        &emsp;&lt;/c-dataset&gt;<br />
+        &emsp;&lt;c-title text=&quot;Bar Chart&quot;&gt;&lt;/c-title&gt;<br />
+        &emsp;&lt;c-legend position=&quot;right&quot;&gt;&lt;/c-legend&gt;<br />
+        &emsp;&lt;c-animation duration=&quot;2000&quot;
+        easing=&quot;easeInBounce&quot;&gt; &lt;/c-animation&gt;<br />
+        &emsp;&lt;c-cartesian-category-axis axis=&quot;x&quot;
+        position=&quot;top&quot;&gt;&lt;/c-cartesian-category-axis&gt;<br />
+        &lt;/c-chart&gt;
+      </code>
+    </c-sample-app-item>
+
+    <!-- Line chart -->
+    <c-sample-app-item>
+      <c-chart slot="chartExample" type="line" responsive="true">
+        <c-dataset
+          labels='["January", "February", "March", "April", "May", "June", "July"]'
+        >
+          <c-data
+            label="My First dataset"
+            detail="[10, 30, 46, 2, 8, 50, 0]"
+            bordercolor="rgba(119, 185, 242, 1)"
+            backgroundcolor="rgba(119, 185, 242, 0.2)"
+          ></c-data>
+        </c-dataset>
+        <c-title text="Line Chart"></c-title>
+      </c-chart>
+      <code slot="chartCode" lang="html">
+        &lt;c-chart type=&quot;line&quot; responsive=&quot;true&quot;&gt;<br />
+        &emsp;&lt;c-dataset labels=&#39;[&quot;January&quot;,
+        &quot;February&quot;, &quot;March&quot;, &quot;April&quot;,
+        &quot;May&quot;, &quot;June&quot;, &quot;July&quot;]&#39;&gt;<br />
+        &emsp;&emsp;&lt;c-data label=&quot;My First dataset&quot;
+        detail=&quot;[10, 30, 46, 2, 8, 50, 0]&quot; bordercolor=&quot;rgba(119,
+        185, 242, 1)&quot;<br />
+        &emsp;&emsp;backgroundcolor=&quot;rgba(119, 185, 242,
+        0.2)&quot;&gt;&lt;/c-data&gt;<br />
+        &emsp;&lt;/c-dataset&gt;<br />
+        &emsp;&lt;c-title text=&quot;Line Chart&quot;&gt;&lt;/c-title&gt;<br />
+        &lt;/c-chart&gt;
+      </code>
+    </c-sample-app-item>
+
+    <!-- Multiple line chart -->
+    <c-sample-app-item>
+      <c-chart slot="chartExample" type="line" responsive="true">
+        <c-dataset
+          labels='["January", "February", "March", "April", "May", "June", "July"]'
+        >
+          <c-data
+            label="My First dataset"
+            backgroundcolor="rgba(82, 183, 216, 1)"
+            bordercolor="rgba(82, 183, 216, 0.2)"
+            detail="[10, 30, 46, 2, 8, 50, 0]"
+            fill="false"
+          ></c-data>
+          <c-data
+            label="My Second dataset"
+            detail="[7, 49, 46, 13, 25, 30, 22]"
+            backgroundcolor="rgba(84, 167, 123, 1)"
+            bordercolor="rgba(84, 167, 123, 0.2)"
+            fill="false"
+          ></c-data>
+        </c-dataset>
+        <c-title text="Line Chart"></c-title>
+        <c-tooltip position="nearest" mode="index" enabled="true"></c-tooltip>
+        <c-line-configuration tension="0.4"></c-line-configuration>
+        <c-cartesian-axis
+          axis="x"
+          position="top"
+          type="category"
+        ></c-cartesian-axis>
+        <c-cartesian-linear-axis
+          axis="y"
+          position="right"
+          ticks-min="-10"
+          title-display="true"
+          title-labelstring="yAxis items"
+          grid-zerolinecolor="rgba(225, 96, 50, 1"
+          grid-zerolinewidth="3"
+        >
+        </c-cartesian-linear-axis>
+      </c-chart>
+      <code slot="chartCode" lang="html">
+        &lt;c-chart type=&quot;line&quot; responsive=&quot;true&quot;&gt;<br />
+        &emsp;&lt;c-dataset labels=&#39;[&quot;January&quot;,
+        &quot;February&quot;, &quot;March&quot;, &quot;April&quot;,
+        &quot;May&quot;, &quot;June&quot;, &quot;July&quot;]&#39;&gt;<br />
+        &emsp;&emsp;&lt;c-data label=&quot;My First dataset&quot;
+        backgroundcolor=&quot;rgba(82, 183, 216, 1)&quot;
+        bordercolor=&quot;rgba(82, 183, 216, 0.2)&quot;<br />
+        &emsp;&emsp;detail=&quot;[10, 30, 46, 2, 8, 50, 0]&quot;
+        fill=&quot;false&quot;&gt;&lt;/c-data&gt;<br />
+        &emsp;&emsp;&lt;c-data label=&quot;My Second dataset&quot;
+        detail=&quot;[7, 49, 46, 13, 25, 30, 22]&quot;
+        backgroundcolor=&quot;rgba(84, 167, 123, 1)&quot;<br />
+        &emsp;&emsp;bordercolor=&quot;rgba(84, 167, 123, 0.2)&quot;
+        fill=&quot;false&quot;&gt;&lt;/c-data&gt;<br />
+        &emsp;&lt;/c-dataset&gt;<br />
+        &emsp;&lt;c-title text=&quot;Line Chart&quot;&gt;&lt;/c-title&gt;<br />
+        &emsp;&lt;c-tooltip position=&quot;nearest&quot; mode=&quot;index&quot;
+        enabled=&quot;true&quot;&gt;&lt;/c-tooltip&gt;<br />
+        &emsp;&lt;c-line-configuration
+        tension=&quot;0.4&quot;&gt;&lt;/c-line-configuration&gt;<br />
+        &emsp;&lt;c-cartesian-axis axis=&quot;x&quot; position=&quot;top&quot;
+        type=&quot;category&quot;&gt;&lt;/c-cartesian-axis&gt;<br />
+        &emsp;&lt;c-cartesian-linear-axis axis=&quot;y&quot;
+        position=&quot;right&quot; ticks-min=&quot;-10&quot;
+        title-display=&quot;true&quot;<br />
+        &emsp;&emsp;title-labelstring=&quot;yAxis items&quot;
+        grid-zerolinecolor=&quot;rgba(225, 96, 50, 1&quot;
+        grid-zerolinewidth=&quot;3&quot;&gt;<br />
+        &emsp;&lt;/c-cartesian-linear-axis&gt;<br />
+        &lt;/c-chart&gt;
+      </code>
+    </c-sample-app-item>
+
+    <!-- Pie chart -->
+    <c-sample-app-item>
+      <c-chart slot="chartExample" type="pie" responsive="true">
+        <c-dataset labels='["OK", "WARNING", "CRITICAL", "UNKNOWN"]'>
+          <c-data
+            label="# of Tomatoes"
+            detail="[12, 19, 3, 5]"
+            backgroundcolor='[
+              "rgba(206, 103, 22, 1)",
+              "rgba(245, 150, 35, 1)",
+              "rgba(245, 192, 98, 1)",
+              "rgba(245, 222, 152, 1)"
+          ]'
+          ></c-data>
+        </c-dataset>
+        <c-title text="Pie Chart"></c-title>
+        <c-legend position="right"></c-legend>
+      </c-chart>
+      <code slot="chartCode" lang="html">
+        &lt;c-chart type=&quot;pie&quot; responsive=&quot;true&quot;&gt;<br />
+        &emsp;&lt;c-dataset labels=&#39;[&quot;OK&quot;, &quot;WARNING&quot;,
+        &quot;CRITICAL&quot;, &quot;UNKNOWN&quot;]&#39;&gt;<br />
+        &emsp;&emsp;&lt;c-data label=&quot;# of Tomatoes&quot; detail=&quot;[12,
+        19, 3, 5]&quot; backgroundcolor=&#39;[<br />
+        &emsp;&emsp;&emsp;&quot;rgba(206, 103, 22, 1)&quot;,<br />
+        &emsp;&emsp;&emsp;&quot;rgba(245, 150, 35, 1)&quot;,<br />
+        &emsp;&emsp;&emsp;&quot;rgba(245, 192, 98, 1)&quot;,<br />
+        &emsp;&emsp;&emsp;&quot;rgba(245, 222, 152, 1)&quot;<br />
+        &emsp;&emsp;]&#39;&gt;&lt;/c-data&gt;<br />
+        &emsp;&lt;/c-dataset&gt;<br />
+        &emsp;&lt;c-title text=&quot;Pie Chart&quot;&gt;&lt;/c-title&gt;<br />
+        &emsp;&lt;c-legend position=&quot;right&quot;&gt;&lt;/c-legend&gt;<br />
+        &lt;/c-chart&gt;
+      </code>
+    </c-sample-app-item>
+
+    <!-- Doughnut chart -->
+    <c-sample-app-item>
+      <c-chart slot="chartExample" type="doughnut" responsive="true">
+        <c-dataset labels='["OK", "WARNING", "CRITICAL", "UNKNOWN"]'>
+          <c-data
+            label="# of Tomatoes"
+            detail="[12, 19, 3, 5]"
+            backgroundcolor='[
+              "rgba(14, 110, 206, 1)",
+              "rgba(45, 156, 237, 1)",
+              "rgba(104, 206, 238, 1)",
+              "rgba(150, 242, 238, 1)"
+          ]'
+          ></c-data>
+        </c-dataset>
+        <c-title text="Doughnut Chart"></c-title>
+        <c-legend position="left"></c-legend>
+        <c-arc-configuration
+          bordercolor="rgba(7, 62, 146, 0.7)"
+        ></c-arc-configuration>
+      </c-chart>
+      <code slot="chartCode" lang="html">
+        &lt;c-chart type=&quot;doughnut&quot; responsive=&quot;true&quot;&gt;<br />
+        &emsp;&lt;c-dataset labels=&#39;[&quot;OK&quot;, &quot;WARNING&quot;,
+        &quot;CRITICAL&quot;, &quot;UNKNOWN&quot;]&#39;&gt;<br />
+        &emsp;&emsp;&lt;c-data label=&quot;# of Tomatoes&quot; detail=&quot;[12,
+        19, 3, 5]&quot; backgroundcolor=&#39;[<br />
+        &emsp;&emsp;&emsp;&quot;rgba(14, 110, 206, 1)&quot;,<br />
+        &emsp;&emsp;&emsp;&quot;rgba(45, 156, 237, 1)&quot;,<br />
+        &emsp;&emsp;&emsp;&quot;rgba(104, 206, 238, 1)&quot;,<br />
+        &emsp;&emsp;&emsp;&quot;rgba(150, 242, 238, 1)&quot;<br />
+        &emsp;&emsp;]&#39;&gt;&lt;/c-data&gt;<br />
+        &emsp;&lt;/c-dataset&gt;<br />
+        &emsp;&lt;c-title text=&quot;Doughnut Chart&quot;&gt;&lt;/c-title&gt;<br />
+        &emsp;&lt;c-legend position=&quot;left&quot;&gt;&lt;/c-legend&gt;<br />
+        &emsp;&lt;c-arc-configuration bordercolor=&quot;rgba(7, 62, 146,
+        0.7)&quot;&gt;&lt;/c-arc-configuration&gt;<br />
+        &lt;/c-chart&gt;
+      </code>
+    </c-sample-app-item>
+
+    <!-- Bubble chart -->
+    <c-sample-app-item>
+      <c-chart slot="chartExample" type="bubble" responsive="true">
+        <c-dataset>
+          <c-data
+            label="John"
+            detail='[\{"x": 3,"y": 7,"r": 10\}, \{"x": 5,"y": 4,"r": 5\}, \{"x": 3,"y": 4,"r": 5\}]'
+            backgroundcolor="rgba(82, 183, 216, 1)"
+          ></c-data>
+          <c-data
+            label="Paul"
+            detail='[\{"x": 2,"y": 2,"r": 2\}, \{"x": 6,"y": 5,"r": 10\}, \{"x": 4,"y": 2,"r": 5\}]'
+            backgroundcolor="rgba(225, 96, 50, 1)"
+          ></c-data>
+          <c-data
+            label="Ringo"
+            detail='[\{"x": 1,"y": 3,"r": 10\}, \{"x": 3,"y": 3,"r": 10\}, \{"x": 6,"y": 4,"r": 10\}]'
+            backgroundcolor="rgba(255, 176, 59, 1)"
+          ></c-data>
+        </c-dataset>
+        <c-title text="Bubble Chart"></c-title>
+        <c-legend position="bottom"></c-legend>
+      </c-chart>
+      <code slot="chartCode" lang="html">
+        &lt;c-chart type=&quot;bubble&quot; responsive=&quot;true&quot;&gt;<br />
+        &emsp;&lt;c-dataset&gt;<br />
+        &emsp;&emsp;&lt;c-data label=&quot;John&quot;
+        detail=&#39;[\&#123;&quot;x&quot;: 3,&quot;y&quot;: 7,&quot;r&quot;:
+        10\&#125;, \&#123;&quot;x&quot;: 5,&quot;y&quot;: 4,&quot;r&quot;:
+        5\&#125;, \&#123;&quot;x&quot;: 3,&quot;y&quot;: 4,&quot;r&quot;:
+        5\&#125;]&#39;<br />
+        &emsp;&emsp;backgroundcolor=&quot;rgba(82, 183, 216,
+        1)&quot;&gt;&lt;/c-data&gt;<br />
+        &emsp;&emsp;&lt;c-data label=&quot;Paul&quot;
+        detail=&#39;[\&#123;&quot;x&quot;: 2,&quot;y&quot;: 2,&quot;r&quot;:
+        2\&#125;, \&#123;&quot;x&quot;: 6,&quot;y&quot;: 5,&quot;r&quot;:
+        10\&#125;, \&#123;&quot;x&quot;: 4,&quot;y&quot;: 2,&quot;r&quot;:
+        5\&#125;]&#39;<br />
+        &emsp;&emsp;backgroundcolor=&quot;rgba(225, 96, 50,
+        1)&quot;&gt;&lt;/c-data&gt;<br />
+        &emsp;&emsp;&lt;c-data label=&quot;Ringo&quot;<br />
+        &emsp;&emsp;detail=&#39;[\&#123;&quot;x&quot;: 1,&quot;y&quot;:
+        3,&quot;r&quot;: 10\&#125;, \&#123;&quot;x&quot;: 3,&quot;y&quot;:
+        3,&quot;r&quot;: 10\&#125;, \&#123;&quot;x&quot;: 6,&quot;y&quot;:
+        4,&quot;r&quot;: 10\&#125;]&#39;<br />
+        &emsp;&emsp;backgroundcolor=&quot;rgba(255, 176, 59,
+        1)&quot;&gt;&lt;/c-data&gt;<br />
+        &emsp;&lt;/c-dataset&gt;<br />
+        &emsp;&lt;c-title text=&quot;Bubble Chart&quot;&gt;&lt;/c-title&gt;<br />
+        &emsp;&lt;c-legend position=&quot;bottom&quot;&gt;&lt;/c-legend&gt;<br />
+        &lt;/c-chart&gt;
+      </code>
+    </c-sample-app-item>
+
+    <!-- Scatter chart -->
+    <c-sample-app-item>
+      <c-chart slot="chartExample" type="scatter" responsive="true">
+        <c-dataset
+          labels='["January", "February", "March", "April", "May", "June", "July"]'
+        >
+          <c-data
+            label="My First dataset"
+            detail='[\{"x":10,"y":5\}, \{"x":30,"y":10\}, \{"x":46,"y":12\}, \{"x":2,"y":20\}, \{"x":8,"y":15\}, \{"x":50,"y":10\}, \{"x":0,"y":25\}]'
+            backgroundcolor="rgba(255, 176, 59, 1)"
+            bordercolor="rgba(255, 176, 59, 1)"
+            fill="false"
+          ></c-data>
+        </c-dataset>
+        <c-title text="Scatter Chart"></c-title>
+        <c-tooltip position="nearest" mode="index" enabled="true"></c-tooltip>
+      </c-chart>
+      <code slot="chartCode" lang="html">
+        &lt;c-chart slot=&quot;chartExample&quot; type=&quot;scatter&quot;
+        responsive=&quot;true&quot;&gt;<br />
+        &emsp;&lt;c-dataset labels=&#39;[&quot;January&quot;,
+        &quot;February&quot;, &quot;March&quot;, &quot;April&quot;,
+        &quot;May&quot;, &quot;June&quot;, &quot;July&quot;]&#39;&gt;<br />
+        &emsp;&emsp;&lt;c-data label=&quot;My First dataset&quot;<br />
+        &emsp;&emsp;detail=&#39;[\&#123;&quot;x&quot;:10,&quot;y&quot;:5\&#125;,
+        \&#123;&quot;x&quot;:30,&quot;y&quot;:10\&#125;,
+        \&#123;&quot;x&quot;:46,&quot;y&quot;:12\&#125;,
+        \&#123;&quot;x&quot;:2,&quot;y&quot;:20\&#125;,
+        \&#123;&quot;x&quot;:8,&quot;y&quot;:15\&#125;,
+        \&#123;&quot;x&quot;:50,&quot;y&quot;:10\&#125;,
+        \&#123;&quot;x&quot;:0,&quot;y&quot;:25\&#125;]&#39;<br />
+        &emsp;&emsp;backgroundcolor=&quot;rgba(255, 176, 59, 1)&quot;
+        bordercolor=&quot;rgba(255, 176, 59, 1)&quot;
+        fill=&quot;false&quot;&gt;&lt;/c-data&gt;<br />
+        &emsp;&lt;/c-dataset&gt;<br />
+        &emsp;&lt;c-title text=&quot;Scatter Chart&quot;&gt;&lt;/c-title&gt;<br />
+        &emsp;&lt;c-tooltip position=&quot;nearest&quot; mode=&quot;index&quot;
+        enabled=&quot;true&quot;&gt;&lt;/c-tooltip&gt;<br />
+        &lt;/c-chart&gt;
+      </code>
+    </c-sample-app-item>
+
+    <!-- Mix chart -->
+    <c-sample-app-item>
+      <c-chart slot="chartExample" type="bar" responsive="true">
+        <c-dataset
+          labels='["January", "February", "March", "April", "May", "June", "July"]'
+        >
+          <c-data
+            label="My First dataset"
+            detail="[10, 30, 46, 2, 8, 50, 0]"
+            backgroundcolor="rgba(82, 183, 216, 1)"
+            bordercolor="rgba(82, 183, 216, 1)"
+            fill="false"
+            order="2"
+          ></c-data>
+          <c-data
+            label="My Second dataset"
+            detail="[7, 49, 46, 13, 25, 30, 22]"
+            backgroundcolor="rgba(255, 176, 59, 1)"
+            bordercolor="rgba(255, 176, 59, 1)"
+            fill="false"
+            order="1"
+            type="line"
+          ></c-data>
+        </c-dataset>
+        <c-title text="Mix Chart"></c-title>
+        <c-tooltip position="nearest" mode="index" enabled="true"></c-tooltip>
+      </c-chart>
+      <code slot="chartCode" lang="html">
+        &lt;c-chart type=&quot;bar&quot; responsive=&quot;true&quot;&gt;<br />
+        &emsp;&lt;c-dataset labels=&#39;[&quot;January&quot;,
+        &quot;February&quot;, &quot;March&quot;, &quot;April&quot;,
+        &quot;May&quot;, &quot;June&quot;, &quot;July&quot;]&#39;&gt;<br />
+        &emsp;&emsp;&lt;c-data label=&quot;My First dataset&quot;
+        detail=&quot;[10, 30, 46, 2, 8, 50, 0]&quot;
+        backgroundcolor=&quot;rgba(82, 183, 216, 1)&quot;<br />
+        &emsp;&emsp;bordercolor=&quot;rgba(82, 183, 216, 1)&quot;
+        fill=&quot;false&quot; order=&quot;2&quot;&gt;&lt;/c-data&gt;<br />
+        &emsp;&emsp;&lt;c-data label=&quot;My Second dataset&quot;
+        detail=&quot;[7, 49, 46, 13, 25, 30, 22]&quot;
+        backgroundcolor=&quot;rgba(255, 176, 59, 1)&quot;<br />
+        &emsp;&emsp;bordercolor=&quot;rgba(255, 176, 59, 1)&quot;
+        fill=&quot;false&quot; order=&quot;1&quot;
+        type=&quot;line&quot;&gt;&lt;/c-data&gt;<br />
+        &emsp;&lt;/c-dataset&gt;<br />
+        &emsp;&lt;c-title text=&quot;Mix Chart&quot;&gt;&lt;/c-title&gt;<br />
+        &emsp;&lt;c-tooltip position=&quot;nearest&quot; mode=&quot;index&quot;
+        enabled=&quot;true&quot;&gt;&lt;/c-tooltip&gt;<br />
+        &lt;/c-chart&gt;
+      </code>
+    </c-sample-app-item>
+
+    <!-- Radar Chart -->
+    <c-sample-app-item>
+      <c-chart slot="chartExample" type="radar">
+        <c-dataset
+          labels='["Eating", "Drinking", "Sleeping", "Designing", "Coding", "Cycling", "Running"]'
+        >
+          <c-data
+            label="My First dataset"
+            detail="[65, 59, 90, 81, 56, 55, 40]"
+            backgroundcolor="rgba(82, 183, 216, 0.2)"
+            bordercolor="rgba(82, 183, 216, 1)"
+            pointhoverbackgroundcolor="#000"
+            pointhoverbordercolor="#000"
+          ></c-data>
+          <c-data
+            label="My Second dataset"
+            detail="[28, 48, 40, 19, 96, 27, 100]"
+            backgroundcolor="rgba(255, 176, 59, 0.2)"
+            bordercolor="rgba(255, 176, 59, 1)"
+          ></c-data>
+        </c-dataset>
+        <c-title text="Radar Chart"></c-title>
+      </c-chart>
+      <code slot="chartCode" lang="html">
+        &lt;c-chart type=&quot;radar&quot;&gt;<br />
+        &emsp;&lt;c-dataset labels=&#39;[&quot;Eating&quot;,
+        &quot;Drinking&quot;, &quot;Sleeping&quot;, &quot;Designing&quot;,
+        &quot;Coding&quot;, &quot;Cycling&quot;,
+        &quot;Running&quot;]&#39;&gt;<br />
+        &emsp;&emsp;&lt;c-data label=&quot;My First dataset&quot;
+        detail=&quot;[65, 59, 90, 81, 56, 55, 40]&quot;<br />
+        &emsp;&emsp;backgroundcolor=&quot;rgba(82, 183, 216, 0.2)&quot;
+        bordercolor=&quot;rgba(82, 183, 216, 1)&quot;<br />
+        &emsp;&emsp;pointhoverbackgroundcolor=&quot;#000&quot;
+        pointhoverbordercolor=&quot;#000&quot;&gt;&lt;/c-data&gt;<br />
+        &emsp;&emsp;&lt;c-data label=&quot;My Second dataset&quot;
+        detail=&quot;[28, 48, 40, 19, 96, 27, 100]&quot;<br />
+        &emsp;&emsp;backgroundcolor=&quot;rgba(255, 176, 59, 0.2)&quot;
+        bordercolor=&quot;rgba(255, 176, 59, 1)&quot;&gt;&lt;/c-data&gt;<br />
+        &emsp;&lt;/c-dataset&gt;<br />
+        &emsp;&lt;c-title text=&quot;Radar Chart&quot;&gt;&lt;/c-title&gt;<br />
+        &lt;/c-chart&gt;
+      </code>
+    </c-sample-app-item>
+
+    <!-- PolarArea Chart -->
+    <c-sample-app-item>
+      <c-chart slot="chartExample" type="polarArea">
+        <c-dataset labels='["Eating", "Drinking", "Sleeping"]'>
+          <c-data
+            label="My First dataset"
+            detail="[41, 38, 35]"
+            backgroundcolor='["rgba(119, 185, 242, .75)", "rgba(195, 152, 245, .75)","rgba(78, 212, 205, .75)"]'
+            bordercolor='["rgba(119, 185, 242, 1)", "rgba(195, 152, 245, 1)","rgba(78, 212, 205, 1)"]'
+          >
+          </c-data>
+        </c-dataset>
+        <c-title text="Polar Area Chart"></c-title>
+      </c-chart>
+      <code slot="chartCode" lang="html">
+        &lt;c-chart type=&quot;polarArea&quot;&gt;<br />
+        &emsp;&lt;c-dataset labels=&#39;[&quot;Eating&quot;,
+        &quot;Drinking&quot;, &quot;Sleeping&quot;]&#39;&gt;<br />
+        &emsp;&emsp;&lt;c-data label=&quot;My First dataset&quot;
+        detail=&quot;[41, 38, 35]&quot;<br />
+        &emsp;&emsp;backgroundcolor=&#39;[&quot;rgba(119, 185, 242, .75)&quot;,
+        &quot;rgba(195, 152, 245, .75)&quot;,&quot;rgba(78, 212, 205,
+        .75)&quot;]&#39;<br />
+        &emsp;&emsp;bordercolor=&#39;[&quot;rgba(119, 185, 242, 1)&quot;,
+        &quot;rgba(195, 152, 245, 1)&quot;,&quot;rgba(78, 212, 205,
+        1)&quot;]&#39;&gt;<br />
+        &emsp;&emsp;&lt;/c-data&gt;<br />
+        &emsp;&lt;/c-dataset&gt;<br />
+        &emsp;&lt;c-title text=&quot;Polar Area
+        Chart&quot;&gt;&lt;/c-title&gt;<br />
+        &lt;/c-chart&gt;
+      </code>
+    </c-sample-app-item>
+
+    <!-- Bar chart -->
+    <c-sample-app-item>
+      <c-chart slot="chartExample" type="bar" responsive="true">
+        <c-title text="Category"></c-title>
+        <c-dataset labels='["OK", "WARNING", "CRITICAL", "UNKNOWN"]'>
+          <c-data
+            label="# of tomatoes"
+            detail="[12, 19, 3, 5]"
+            backgroundcolor='[
+            "rgba(82, 183, 216, 1)",
+            "rgba(225, 96, 50, 1)",
+            "rgba(255, 176, 59, 1)",
+            "rgba(84, 167, 123, 1)"
+          ]'
+          ></c-data>
+        </c-dataset>
+        <c-cartesian-category-axis
+          axis="x"
+          position="top"
+          title-display="true"
+          title-labelstring="Category axis"
+        >
+        </c-cartesian-category-axis>
+        <c-cartesian-linear-axis
+          axis="y"
+          ticks-stepsize="15"
+          position="right"
+          title-display="true"
+          title-labelstring="Linear axis"
+        ></c-cartesian-linear-axis>
+      </c-chart>
+      <code slot="chartCode" lang="html">
+        &lt;c-chart type=&quot;bar&quot; responsive=&quot;true&quot;&gt;<br />
+        &emsp;&lt;c-title text=&quot;Category&quot;&gt;&lt;/c-title&gt;<br />
+        &emsp;&lt;c-dataset labels=&#39;[&quot;OK&quot;, &quot;WARNING&quot;,
+        &quot;CRITICAL&quot;, &quot;UNKNOWN&quot;]&#39;&gt;<br />
+        &emsp;&emsp;&lt;c-data label=&quot;# of tomatoes&quot; detail=&quot;[12,
+        19, 3, 5]&quot; backgroundcolor=&#39;[<br />
+        &emsp;&emsp;&quot;rgba(82, 183, 216, 1)&quot;,<br />
+        &emsp;&emsp;&quot;rgba(225, 96, 50, 1)&quot;,<br />
+        &emsp;&emsp;&quot;rgba(255, 176, 59, 1)&quot;,<br />
+        &emsp;&emsp;&quot;rgba(84, 167, 123, 1)&quot;<br />
+        &emsp;&emsp;]&#39;&gt;&lt;/c-data&gt;<br />
+        &emsp;&lt;/c-dataset&gt;<br />
+        &emsp;&lt;c-cartesian-category-axis axis=&quot;x&quot;
+        position=&quot;top&quot; title-display=&quot;true&quot;
+        title-labelstring=&quot;Category axis&quot;&gt;<br />
+        &emsp;&lt;/c-cartesian-category-axis&gt;<br />
+        &emsp;&lt;c-cartesian-linear-axis axis=&quot;y&quot;
+        ticks-stepsize=&quot;15&quot; position=&quot;right&quot;
+        title-display=&quot;true&quot; title-labelstring=&quot;Linear
+        axis&quot;&gt;&lt;/c-cartesian-linear-axis&gt;<br />
+        &lt;/c-chart&gt;
+      </code>
+    </c-sample-app-item>
+
+    <!-- Stacked Bar chart -->
+    <c-sample-app-item>
+      <c-chart slot="chartExample" type="bar" responsive="true">
+        <c-dataset
+          labels='["Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 6", "Item 7"]'
+        >
+          <c-data
+            label="Neutral"
+            detail="[40, 47, 44, 38, 27, 31, 25]"
+            backgroundcolor="rgba(50, 150, 237, 1)"
+            stack="1"
+          ></c-data>
+          <c-data
+            label="Warning"
+            detail="[10, 12, 7, 5, 4, 6, 8]"
+            backgroundcolor="rgba(119, 185, 242, 1)"
+            stack="1"
+          ></c-data>
+          <c-data
+            label="Error"
+            detail="[17, 11, 22, 18, 12, 7, 5]"
+            backgroundcolor="rgba(157, 83, 242, 1)"
+            stack="1"
+          ></c-data>
+        </c-dataset>
+        <c-title text="Stacked Bar Chart"></c-title>
+        <c-cartesian-axis axis="x" stacked="true"> </c-cartesian-axis>
+        <c-cartesian-axis axis="y" stacked="true"></c-cartesian-axis>
+      </c-chart>
+      <code slot="chartCode" lang="html">
+        &lt;c-chart type=&quot;bar&quot; responsive=&quot;true&quot;&gt;<br />
+        &emsp;&lt;c-dataset labels=&#39;[&quot;Item 1&quot;,&quot;Item
+        2&quot;,&quot;Item 3&quot;,&quot;Item 4&quot;, &quot;Item
+        5&quot;,&quot;Item 6&quot;,&quot;Item 7&quot;]&#39;&gt;<br />
+        &emsp;&emsp;&lt;c-data label=&quot;Neutral&quot; detail=&quot;[40, 47,
+        44, 38, 27, 31, 25]&quot; backgroundcolor=&#39;rgba(50, 150, 237,
+        1)&#39; stack=&quot;1&quot;&gt;&lt;/c-data&gt;<br />
+        &emsp;&emsp;&lt;c-data label=&quot;Warning&quot; detail=&quot;[10, 12,
+        7, 5, 4, 6, 8]&quot; backgroundcolor=&#39;rgba(119, 185, 242, 1)&#39;
+        stack=&quot;1&quot;&gt;&lt;/c-data&gt;<br />
+        &emsp;&emsp;&lt;c-data label=&quot;Error&quot; detail=&quot;[17, 11, 22,
+        18, 12, 7, 5]&quot; backgroundcolor=&#39;rgba(157, 83, 242, 1)&#39;
+        stack=&quot;1&quot;&gt;&lt;/c-data&gt;<br />
+        &emsp;&lt;/c-dataset&gt;<br />
+        &emsp;&lt;c-cartesian-axis axis=&quot;x&quot; stacked=&quot;true&quot;
+        &gt;<br />
+        &emsp;&lt;/c-cartesian-axis&gt;<br />
+        &emsp;&lt;c-cartesian-axis axis=&quot;y&quot;
+        stacked=&quot;true&quot;&gt;&lt;/c-cartesian-axis&gt;<br />
+        &lt;/c-chart&gt;
+      </code>
+    </c-sample-app-item>
+
+    <!-- Horizontal Bar chart -->
+    <c-sample-app-item>
+      <c-chart slot="chartExample" type="horizontalBar" responsive="true">
+        <c-dataset
+          labels='["Group 1", "Group 2", "Group 3", "Group 4", "Group 5", "Group 6"]'
+        >
+          <c-data
+            label="# of Items"
+            detail="[12, 19, 7, 9, 5, 15]"
+            backgroundcolor="rgba(255, 176, 59, 1)"
+            bordercolor="rgba(255, 176, 59, 1)"
+            borderwidth="1"
+          ></c-data>
+        </c-dataset>
+        <c-title text="Horizontal Chart"></c-title>
+        <c-legend position="bottom"></c-legend>
+        <c-cartesian-category-axis
+          axis="y"
+          position="left"
+        ></c-cartesian-category-axis>
+        <c-cartesian-linear-axis
+          axis="x"
+          ticks-beginatzero="true"
+        ></c-cartesian-linear-axis>
+      </c-chart>
+      <code slot="chartCode" lang="html">
+        &lt;c-chart type=&quot;horizontalBar&quot;
+        responsive=&quot;true&quot;&gt;<br />
+        &emsp;&lt;c-dataset labels=&apos;[&quot;Group 1&quot;, &quot;Group
+        2&quot;, &quot;Group 3&quot;, &quot;Group 4&quot;, &quot;Group 5&quot;,
+        &quot;Group 6&quot;]&apos;&gt;<br />
+        &emsp;&emsp;&lt;c-data label=&quot;# of Items&quot; detail=&quot;[12,
+        19, 7, 9, 5, 15]&quot; backgroundcolor=&quot;rgba(255, 176, 59, 1)&quot;
+        bordercolor=&quot;rgba(255, 176, 59, 1)&quot;
+        borderwidth=&quot;1&quot;&gt;&lt;/c-data&gt;<br />
+        &emsp;&lt;/c-dataset&gt;<br />
+        &emsp;&lt;c-title text=&quot;Horizontal
+        Chart&quot;&gt;&lt;/c-title&gt;<br />
+        &emsp;&lt;c-legend position=&quot;bottom&quot;&gt;&lt;/c-legend&gt;<br />
+        &emsp;&lt;c-cartesian-category-axis axis=&quot;y&quot;
+        position=&quot;left&quot;&gt;&lt;/c-cartesian-category-axis&gt;<br />
+        &emsp;&lt;c-cartesian-linear-axis axis=&quot;x&quot;
+        ticks-beginatzero=&quot;true&quot;&gt;&lt;/c-cartesian-linear-axis&gt;<br />
+        &lt;/c-chart&gt;
+      </code>
+    </c-sample-app-item>
+
+    <!-- Time chart -->
+    <c-sample-app-item>
+      <c-chart slot="chartExample" type="line" responsive="true">
+        <c-dataset>
+          <c-data
+            label="Stock price"
+            detail='[\{"y":30,"x":"2020-08-20T00:00:00.000Z"\},\{"y":25,"x":"2020-08-21T00:00:00.000Z"\},\{"y":50,"x":"2020-08-23T00:00:00.000Z"\},\{"y":70,"x":"2020-08-29T00:00:00.000Z"\}]'
+            bordercolor="rgba(119, 185, 242, 1)"
+            backgroundcolor="rgba(119, 185, 242, 1)"
+            borderwidth="1"
+            fill="false"
+          ></c-data>
+        </c-dataset>
+        <c-title text="Linear Time Chart"></c-title>
+        <c-cartesian-linear-axis
+          axis="y"
+          position="left"
+          display="true"
+          ticks-beginatzero="true"
+        ></c-cartesian-linear-axis>
+        <c-cartesian-time-axis
+          axis="x"
+          time-unit="day"
+          display="true"
+          tick-source="data"
+          bounds="ticks"
+        ></c-cartesian-time-axis>
+      </c-chart>
+      <code slot="chartCode" lang="html">
+        &lt;c-chart type=&quot;line&quot; responsive=&quot;true&quot;&gt;<br />
+        &emsp;&lt;c-dataset&gt;<br />
+        &emsp;&emsp;&lt;c-data label=&quot;Stock price&quot;
+        bordercolor=&quot;rgba(119, 185, 242, 1)&quot;
+        backgroundcolor=&quot;rgba(119, 185, 242, 1)&quot;
+        borderwidth=&quot;1&quot; fill=&quot;false&quot;<br />
+        &emsp;&emsp;&emsp;detail=&apos;[\&#123;&quot;y&quot;:30,&quot;x&quot;:&quot;2020-08-20T00:00:00.000Z&quot;\&#125;,\&#123;&quot;y&quot;:25,&quot;x&quot;:&quot;2020-08-21T00:00:00.000Z&quot;\&#125;,\&#123;&quot;y&quot;:50,&quot;x&quot;:&quot;2020-08-23T00:00:00.000Z&quot;\&#125;,\&#123;&quot;y&quot;:70,&quot;x&quot;:&quot;2020-08-29T00:00:00.000Z&quot;\&#125;]&apos;&gt;<br />
+        &emsp;&emsp;&lt;/c-data&gt;<br />
+        &emsp;&lt;/c-dataset&gt;<br />
+        &emsp;&lt;c-title text=&quot;Linear Time
+        Chart&quot;&gt;&lt;/c-title&gt;<br />
+        &emsp;&lt;c-cartesian-linear-axis axis=&quot;y&quot;
+        position=&quot;left&quot; display=&quot;true&quot;
+        ticks-beginatzero=&quot;true&quot;&gt;&lt;/c-cartesian-linear-axis&gt;<br />
+        &emsp;&lt;c-cartesian-time-axis axis=&quot;x&quot;
+        time-unit=&quot;day&quot; display=&quot;true&quot;
+        tick-source=&quot;data&quot; bounds=&quot;ticks&quot;&gt;<br />
+        &emsp;&lt;/c-cartesian-time-axis&gt;<br />
+        &lt;/c-chart&gt;
+      </code>
+    </c-sample-app-item>
+
+    <!-- Multiple axes -->
+    <c-sample-app-item>
+      <c-chart slot="chartExample" type="line" responsive="true">
+        <c-dataset labels='["A", "B", "C", "D", "E"]'>
+          <c-data
+            yaxisid="left"
+            label="Left dataset"
+            backgroundcolor="rgba(82, 183, 216, 1)"
+            bordercolor="rgba(82, 183, 216, 0.2)"
+            detail="[10, 9, 4, 3, 6]"
+            fill="false"
+          ></c-data>
+          <c-data
+            yaxisid="right"
+            label="Right dataset"
+            detail="[3, 2, 1, 5, 0]"
+            backgroundcolor="rgba(84, 167, 123, 1)"
+            bordercolor="rgba(84, 167, 123, 0.2)"
+            fill="false"
+          ></c-data>
+        </c-dataset>
+        <c-title text="Multiple axes with different scales"></c-title>
+        <c-cartesian-axis
+          axis="x"
+          position="bottom"
+          type="category"
+        ></c-cartesian-axis>
+        <c-cartesian-linear-axis
+          axisid="left"
+          axis="y"
+          position="left"
+          ticks-stepsize="3"
+          title-labelstring="Left axis"
+          title-display="true"
+        ></c-cartesian-linear-axis>
+        <c-cartesian-linear-axis
+          axisid="right"
+          axis="y"
+          position="right"
+          ticks-stepsize="1"
+          title-labelstring="Right axis"
+          title-display="true"
+        ></c-cartesian-linear-axis>
+      </c-chart>
+      <code slot="chartCode" lang="html">
+        &lt;c-chart type=&quot;line&quot; responsive=&quot;true&quot;&gt;<br />
+        &emsp;&lt;c-dataset labels=&apos;[&quot;A&quot;, &quot;B&quot;,
+        &quot;C&quot;, &quot;D&quot;, &quot;E&quot;]&apos;&gt;<br />
+        &emsp;&emsp;&lt;c-data yaxisid=&quot;left&quot; label=&quot;Left
+        dataset&quot; detail=&quot;[10, 9, 4, 3, 6]&quot;
+        backgroundcolor=&quot;rgba(82, 183, 216, 1)&quot;<br />
+        &emsp;&emsp;&emsp;bordercolor=&quot;rgba(82, 183, 216, 0.2)&quot;
+        fill=&quot;false&quot;&gt;&lt;/c-data&gt;<br />
+        &emsp;&emsp;&lt;c-data yaxisid=&quot;right&quot; label=&quot;Right
+        dataset&quot; detail=&quot;[3, 2, 1, 5, 0]&quot;
+        backgroundcolor=&quot;rgba(84, 167, 123, 1)&quot;<br />
+        &emsp;&emsp;&emsp;bordercolor=&quot;rgba(84, 167, 123, 0.2)&quot;
+        fill=&quot;false&quot;&gt;&lt;/c-data&gt;<br />
+        &emsp;&lt;/c-dataset&gt;<br />
+        &emsp;&lt;c-title text=&quot;Multiple axes with different
+        scales&quot;&gt;&lt;/c-title&gt;<br />
+        &emsp;&lt;c-cartesian-axis axis=&quot;x&quot;
+        position=&quot;bottom&quot;
+        type=&quot;category&quot;&gt;&lt;/c-cartesian-axis&gt;<br />
+        &emsp;&lt;c-cartesian-linear-axis axisid=&quot;left&quot;
+        axis=&quot;y&quot; position=&quot;left&quot;
+        ticks-stepsize=&quot;3&quot; title-labelstring=&quot;Left axis&quot;<br />
+        &emsp;&emsp;title-display=&quot;true&quot;&gt;&lt;/c-cartesian-linear-axis&gt;<br />
+        &emsp;&lt;c-cartesian-linear-axis axisid=&quot;right&quot;
+        axis=&quot;y&quot; position=&quot;right&quot;
+        ticks-stepsize=&quot;1&quot; title-labelstring=&quot;Right axis&quot;<br />
+        &emsp;&emsp;title-display=&quot;true&quot;&gt;&lt;/c-cartesian-linear-axis&gt;<br />
+        &lt;/c-chart&gt;
+      </code>
+    </c-sample-app-item>
+  </div>
+</template>
