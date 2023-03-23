@@ -11,8 +11,12 @@ const columns_bls = [
 ];
 
 export default class HelloWorld extends LightningElement {
-  @track unemploymentData; 
+  @track unemploymentData;
+  @track unemploymentDataPoints;
+  @track unemploymentTimePoints; 
   @track inflationData;
+  @track inflationDataPoints;
+  @track inflationTimePoints;
   @track isLoading = true;
   //@wire (getFinancialData, {}) financialData; 
 
@@ -24,8 +28,26 @@ export default class HelloWorld extends LightningElement {
     getFinancialData()
       .then(result => {
         this.unemploymentData = result.filter((eachItem) => eachItem.Type__c == 'Unemployment');
+        var dataPoints = [];
+        var timePoints = [];
+        this.unemploymentData.sort((a,b) => (a.Date__c > b.Date__c) ? 1 : ((b.Date__c > a.Date__c) ? -1 : 0));
+        this.unemploymentData.forEach((item) => {
+          dataPoints.push(item.Value__c);
+          timePoints.push(item.Date__c);
+        })
+        this.unemploymentDataPoints = dataPoints;
+        this.unemploymentTimePoints = timePoints;
+
         this.inflationData = result.filter((eachItem) => eachItem.Type__c == 'CPI');
-        this.data = result;
+        var dataPoints_inflation = [];
+        var timePoints_inflation = [];
+        this.inflationData.sort((a,b) => (a.Date__c > b.Date__c) ? 1 : ((b.Date__c > a.Date__c) ? -1 : 0));
+        this.inflationData.forEach((item) => {
+          dataPoints_inflation.push(item.Value__c);
+          timePoints_inflation.push(item.Date__c);
+        })
+        this.inflationDataPoints = dataPoints_inflation;
+        this.inflationTimePoints = timePoints_inflation;
         this.isLoading = false;
       })
       .catch(error => {
