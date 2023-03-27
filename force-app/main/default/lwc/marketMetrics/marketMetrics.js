@@ -3,6 +3,8 @@ import { LightningElement, wire, track, api } from 'lwc';
 import getFinancialData from '@salesforce/apex/FinancialDataManager.getFinancialData';
 
 import { loadStyle, loadScript } from 'lightning/platformResourceLoader';
+import TRAILHEAD_LOGO from '@salesforce/resourceUrl/chartjs_v280';
+//https://d5e0000012hzdeai-dev-ed.lightning.force.com/resource/1678834348000/chartjs_v280
  
 //table columns for bureau of labor statistics callout
 const columns_bls = [

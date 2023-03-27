@@ -7,6 +7,12 @@
     <lightning-spinner alternative-text="Loading" variant="brand" size="large">
     </lightning-spinner>
   </template>
+  <template if:true={inflationData}>
+    <div class="slds-scrollable--y" style="height: 300px">
+      <lightning-datatable key-field="id" data={inflationData} columns={columns}>
+      </lightning-datatable>
+    </div>
+  </template>
   <article class="slds-card">
     <div class="slds-card__header slds-grid">
       <header class="slds-media slds-media_center slds-has-flexi-truncate">
