@@ -1,0 +1,9 @@
+{
+"main": "app",
+
+"modulesSourceDirectory": "src/",
+
+"staticResourcesDirectories": "['staticresources/']",
+
+"port": 3344
+}

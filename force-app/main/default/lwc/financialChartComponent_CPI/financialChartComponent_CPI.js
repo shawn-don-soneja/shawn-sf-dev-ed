@@ -5,20 +5,11 @@ import { loadScript } from 'lightning/platformResourceLoader';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 export default class FinancialChartComponent extends LightningElement {
-    @track unemploymentData;
-    @track unemploymentDataPoints;
-    @track unemploymentTimePoints; 
-    @track inflationData;
-    @track inflationDataPoints;
-    @track inflationTimePoints;
-    @track isLoading = true;
-
-    @api chartCategory = 'Unemployment';
-
-    @track unemploymentChartData = [];
-
+    @track mainData;
+    @track chartData = [];
     @track isChartJsInitialized;
     chart;
+    //@track isLoading = true;
 
     @track config = {
         type: 'line',
@@ -26,7 +17,7 @@ export default class FinancialChartComponent extends LightningElement {
             datasets: [{
                 fill: false,
                 label: 'Line Dataset',
-                data: this.unemploymentChartData,
+                data: this.chartData,
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)'
                 ],
@@ -41,14 +32,14 @@ export default class FinancialChartComponent extends LightningElement {
         options: {
             title: {
                 display: true,
-                text: 'Sand Samples Against Comm Weight %.'
+                text: 'CPI Data'
             },
             scales: {
                 xAxes: [{
                     type: 'linear',
                     ticks: {
                         suggestedMin: 0,
-                        suggestedMax: 40,
+                        suggestedMax: 30,
                         stepSize: 1
                     }
                 }],
@@ -57,11 +48,8 @@ export default class FinancialChartComponent extends LightningElement {
                     ticks: {
                         autoSkip: true,
                         suggestedMin: 0,
-                        suggestedMax: 20000,
-                        stepSize: 1000,
-                        callback: function (value) {
-                            return value + '%';
-                        }
+                        suggestedMax: 1,
+                        stepSize: 0.1,
                     }
                 }]
             },
@@ -73,21 +61,21 @@ export default class FinancialChartComponent extends LightningElement {
 
         getFinancialData()
             .then(result => {
-            this.unemploymentData = result.filter((eachItem) => eachItem.Type__c == 'Unemployment');
+            this.mainData = result.filter((eachItem) => eachItem.Type__c == 'CPI');
             var dataPoints = [];
             //var timePoints = [];
-            this.unemploymentData.sort((a,b) => (a.Date__c > b.Date__c) ? 1 : ((b.Date__c > a.Date__c) ? -1 : 0));
+            this.mainData.sort((a,b) => (a.Date__c > b.Date__c) ? 1 : ((b.Date__c > a.Date__c) ? -1 : 0));
             var index = 1;
-            this.unemploymentData.forEach((item) => {
+            this.mainData.forEach((item) => {
                 dataPoints.push({x: index, y: item.Value__c});
                 index++;
                 //timePoints.push(item.Date__c);
             })
-            console.log('unemployment data before: ', this.unemploymentChartData );
+            console.log('unemployment data before: ', this.chartData );
             console.log('datapoints: ' + JSON.stringify(dataPoints));
-            this.unemploymentChartData = [{y: 12, x: 122}, {y: 13, x: 122}];
+            this.chartData = [{y: 12, x: 122}, {y: 13, x: 122}];
 
-            console.log('unemployment data after: ', this.unemploymentChartData );
+            console.log('unemployment data after: ', this.chartData );
             console.log('config: ', JSON.stringify(this.config.data));
             var config = this.config;
             config.data.datasets[0].data = dataPoints;
