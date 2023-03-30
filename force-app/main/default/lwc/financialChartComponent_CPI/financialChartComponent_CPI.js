@@ -5,6 +5,7 @@ import { loadScript } from 'lightning/platformResourceLoader';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 export default class FinancialChartComponent extends LightningElement {
+    @api inflationdata;
     @track mainData;
     @track chartData = [];
     @track chartLabels = [];
@@ -58,60 +59,33 @@ export default class FinancialChartComponent extends LightningElement {
         }
     };
 
-    /*
-    renderedCallback() {
-        
+    connectedCallback(){
+        console.log('inflation data:' + this.inflationdata);
 
-        getFinancialData()
-            .then(result => {
-            this.mainData = result.filter((eachItem) => eachItem.Type__c == 'CPI');
-            var dataPoints = [];
-            var chartLabels = [];
-            //var timePoints = [];
-            this.mainData.sort((a,b) => (a.Date__c > b.Date__c) ? 1 : ((b.Date__c > a.Date__c) ? -1 : 0));
-            var index = 1;
-            this.mainData.forEach((item) => {
-                //dataPoints.push({x: index, y: item.Value__c});
-                chartLabels.push(item.Date__c);
-                dataPoints.push({x: item.Date__c, y: item.Value__c});
-                index++;
-                //timePoints.push(item.Date__c);
-            })
-            console.log('unemployment data before: ', this.chartData );
-            console.log('datapoints: ' + JSON.stringify(dataPoints));
-            this.chartData = [{y: 12, x: 122}, {y: 13, x: 122}];
-            //this.chartLabels = chartLabels;
-
-            console.log('unemployment data after: ', this.chartData );
-            console.log('config: ', JSON.stringify(this.config.data));
-            var myconfig = this.config;
-            myconfig.data.datasets[0].data = dataPoints;
-            myconfig.data.labels = chartLabels;
+        //render chart
+        if(!this.isChartJsInitialized && this.inflationdata != null){
+            this.isChartJsInitialized = true;
+            console.log("called to initilaize");
 
             //local
             loadScript(this, chartjs + '.js').then(() => {
-            
+                console.log('script loaded');
             //org
             //loadScript(this, chartjs).then(() => {
-                const ctx = this.template.querySelector('canvas.linechart').getContext('2d');
-                this.chart = new window.Chart(ctx, myconfig);
+                const ctx = this.template.querySelector('canvas.linechartcpi').getContext('2d');
+                this.chart = new window.Chart(ctx, this.config);
                 this.chart.canvas.parentNode.style.height = '100%';
                 this.chart.canvas.parentNode.style.width = '100%';
             }).catch(error => {
                 this.dispatchEvent(
                     new ShowToastEvent({
                         title: 'Error loading ChartJS',
-                        message: JSON.stringify(error),
+                        message: error.message,
                         variant: 'error',
                     }),
                 );
                 console.log("Error:", JSON.stringify(error));
             });
-        })
-        if (this.isChartJsInitialized) {
-            return;
         }
-        this.isChartJsInitialized = true;
-    } 
-    */
+    }
 }

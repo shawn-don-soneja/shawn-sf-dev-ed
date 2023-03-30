@@ -7,7 +7,7 @@ import { loadScript } from 'lightning/platformResourceLoader';
 export default class ParentFinancialChartContainer extends LightningElement {
     @track financialData;
     @track unemploymentData;
-    @track inflationData;
+    inflationData;
     //@track interestRateData;
     //@track gdpData;
 
@@ -21,14 +21,15 @@ export default class ParentFinancialChartContainer extends LightningElement {
 
                 //format the data to pass to child charts
                 var unemploymentData = [];
-                var inflationData = [];
+                var inflationDataPoints = [];
                 sortedData.forEach((item) => {
                     if(item.Type__c == 'Unemployment'){
                         unemploymentData.push({x: item.Date__c, y: item.Value__c});
                     }else if(item.Type__c == 'CPI'){
-                        inflationData.push({x: item.Date__c, y: item.Value__c});
+                        inflationDataPoints.push({x: item.Date__c, y: item.Value__c});
                     }
                 })
+                this.inflationData = inflationDataPoints;
             })
     } 
 }
