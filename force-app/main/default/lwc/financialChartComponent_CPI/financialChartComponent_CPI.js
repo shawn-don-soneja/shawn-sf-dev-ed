@@ -63,7 +63,7 @@ export default class FinancialChartComponent extends LightningElement {
         console.log('inflation data:' + this.inflationdata);
 
         //render chart
-        if(!this.isChartJsInitialized && this.inflationdata != null){
+        if(!this.isChartJsInitialized){
             this.isChartJsInitialized = true;
             console.log("called to initilaize");
 
