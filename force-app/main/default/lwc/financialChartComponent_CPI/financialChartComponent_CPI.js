@@ -7,6 +7,7 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 export default class FinancialChartComponent extends LightningElement {
     @track mainData;
     @track chartData = [];
+    @track chartLabels = [];
     @track isChartJsInitialized;
     chart;
     //@track isLoading = true;
@@ -14,32 +15,33 @@ export default class FinancialChartComponent extends LightningElement {
     @track config = {
         type: 'line',
         data: {
+            labels: ["January"],
             datasets: [{
                 fill: false,
-                label: 'Line Dataset',
+                label: 'Inflation Rate',
                 data: this.chartData,
                 backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)'
+                    'rgba(37, 150, 190, 0.2)'
                 ],
                 borderColor: [
-                    'rgba(255, 99, 132, 1)'
+                    'rgba(37, 150, 190, 1)'
                 ],
-                pointBackgroundColor: 'rgba(255, 99, 132, 0.2)',
-                pointBorderColor: 'rgba(255, 99, 132, 1)'
+                pointBackgroundColor: 'rgba(37, 150, 190, 0.2)',
+                pointBorderColor: 'rgba(37, 150, 190, 1)'
             },
             ]
         },
         options: {
             title: {
-                display: true,
+                display: false,
                 text: 'CPI Data'
             },
             scales: {
                 xAxes: [{
-                    type: 'linear',
+                    type: 'time',
                     ticks: {
                         suggestedMin: 0,
-                        suggestedMax: 30,
+                        suggestedMax: 40,
                         stepSize: 1
                     }
                 }],
@@ -56,29 +58,35 @@ export default class FinancialChartComponent extends LightningElement {
         }
     };
 
-    connectedCallback() {
+    /*
+    renderedCallback() {
         
 
         getFinancialData()
             .then(result => {
             this.mainData = result.filter((eachItem) => eachItem.Type__c == 'CPI');
             var dataPoints = [];
+            var chartLabels = [];
             //var timePoints = [];
             this.mainData.sort((a,b) => (a.Date__c > b.Date__c) ? 1 : ((b.Date__c > a.Date__c) ? -1 : 0));
             var index = 1;
             this.mainData.forEach((item) => {
-                dataPoints.push({x: index, y: item.Value__c});
+                //dataPoints.push({x: index, y: item.Value__c});
+                chartLabels.push(item.Date__c);
+                dataPoints.push({x: item.Date__c, y: item.Value__c});
                 index++;
                 //timePoints.push(item.Date__c);
             })
             console.log('unemployment data before: ', this.chartData );
             console.log('datapoints: ' + JSON.stringify(dataPoints));
             this.chartData = [{y: 12, x: 122}, {y: 13, x: 122}];
+            //this.chartLabels = chartLabels;
 
             console.log('unemployment data after: ', this.chartData );
             console.log('config: ', JSON.stringify(this.config.data));
-            var config = this.config;
-            config.data.datasets[0].data = dataPoints;
+            var myconfig = this.config;
+            myconfig.data.datasets[0].data = dataPoints;
+            myconfig.data.labels = chartLabels;
 
             //local
             loadScript(this, chartjs + '.js').then(() => {
@@ -86,7 +94,7 @@ export default class FinancialChartComponent extends LightningElement {
             //org
             //loadScript(this, chartjs).then(() => {
                 const ctx = this.template.querySelector('canvas.linechart').getContext('2d');
-                this.chart = new window.Chart(ctx, this.config);
+                this.chart = new window.Chart(ctx, myconfig);
                 this.chart.canvas.parentNode.style.height = '100%';
                 this.chart.canvas.parentNode.style.width = '100%';
             }).catch(error => {
@@ -104,5 +112,6 @@ export default class FinancialChartComponent extends LightningElement {
             return;
         }
         this.isChartJsInitialized = true;
-    }
+    } 
+    */
 }
