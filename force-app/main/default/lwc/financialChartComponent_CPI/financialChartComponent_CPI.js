@@ -80,7 +80,11 @@ export default class FinancialChartComponent extends LightningElement {
             var config = this.config;
             config.data.datasets[0].data = dataPoints;
 
-            loadScript(this, chartjs).then(() => {
+            //local
+            loadScript(this, chartjs + '.js').then(() => {
+            
+            //org
+            //loadScript(this, chartjs).then(() => {
                 const ctx = this.template.querySelector('canvas.linechart').getContext('2d');
                 this.chart = new window.Chart(ctx, this.config);
                 this.chart.canvas.parentNode.style.height = '100%';
@@ -89,10 +93,11 @@ export default class FinancialChartComponent extends LightningElement {
                 this.dispatchEvent(
                     new ShowToastEvent({
                         title: 'Error loading ChartJS',
-                        message: error.message,
+                        message: JSON.stringify(error),
                         variant: 'error',
                     }),
                 );
+                console.log("Error:", JSON.stringify(error));
             });
         })
         if (this.isChartJsInitialized) {
