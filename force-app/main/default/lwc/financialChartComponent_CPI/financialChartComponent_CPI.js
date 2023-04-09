@@ -7,7 +7,7 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 export default class FinancialChartComponent extends LightningElement {
     @api inflationdata;
     @track mainData;
-    @track chartData = [];
+    @track chartData = [{x: 1, y: 2}];
     @track chartLabels = [];
     @track isChartJsInitialized;
     chart;

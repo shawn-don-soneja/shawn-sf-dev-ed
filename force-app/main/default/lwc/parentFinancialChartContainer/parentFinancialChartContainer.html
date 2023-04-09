@@ -1,6 +1,28 @@
 <template>
-    <div>
-        <c-financial-chart-component unemploymentdata={unemploymentData}></c-financial-chart-component>
-        <c-financial-chart-component_-c-p-i inflationdata={inflationData}></c-financial-chart-component_-c-p-i>
-    </div>
+    <lightning-card title="Unemployment Rate" icon-name="utility:groups">
+        <div class="slds-grid slds-wrap slds-grid--pull-padded">
+            <div if:true={isChartJsInitialized} class="slds-col--padded slds-size--1-of-1">
+                <canvas class="linechartunemployment" lwc:dom="manual"></canvas>
+            </div>
+            <div if:false={isChartJsInitialized} class="slds-col--padded slds-size--1-of-1">
+                ChartJs Not loaded yet
+            </div>
+            <div class="slds-col--padded slds-size--1-of-1">
+                Footer
+            </div>
+        </div>
+    </lightning-card>
+    <lightning-card title="Inflation Rate" icon-name="utility:money">
+        <div class="slds-grid slds-wrap slds-grid--pull-padded">
+            <div if:true={isChartJsInitialized} class="slds-col--padded slds-size--1-of-1">
+                <canvas class="linechartcpi" lwc:dom="manual"></canvas>
+            </div>
+            <div if:false={isChartJsInitialized} class="slds-col--padded slds-size--1-of-1">
+                ChartJs Not loaded yet
+            </div>
+            <div class="slds-col--padded slds-size--1-of-1">
+                
+            </div>
+        </div>
+    </lightning-card> 
 </template>
