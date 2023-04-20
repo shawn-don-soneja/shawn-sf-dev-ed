@@ -8,7 +8,7 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 export default class ParentFinancialChartContainer extends LightningElement {
     @track financialData;
-    @track unemploymentData;
+    unemploymentData = [];
     inflationData = [{x: "12/02/2022", y:50}, {x: "12/05/2022", y:60}];
     @track isChartJsInitialized;
     chart;
@@ -56,6 +56,45 @@ export default class ParentFinancialChartContainer extends LightningElement {
             },
         }
     };
+    @track unemploymentConfig = {
+        type: 'line',
+        data: {
+            labels: ["January"],
+            datasets: [{
+                fill: false,
+                label: 'Unemployment Rate',
+                data: this.chartData,
+                backgroundColor: [
+                    'rgba(37, 150, 190, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(37, 150, 190, 1)'
+                ],
+                pointBackgroundColor: 'rgba(37, 150, 190, 0.2)',
+                pointBorderColor: 'rgba(37, 150, 190, 1)'
+            },
+            ]
+        },
+        options: {
+            title: {
+                display: true,
+                text: 'Unemployment Data'
+            },
+            scales: {
+                xAxes: [{
+                    type: 'time',
+
+                }],
+                yAxes: [{
+                    type: 'linear',
+                    ticks: {
+                        min: 15000,
+                        max: 20000,
+                    }
+                }]
+            },
+        }
+    };
     
     //@track interestRateData;
     //@track gdpData;
@@ -83,7 +122,7 @@ export default class ParentFinancialChartContainer extends LightningElement {
 
                 loadScript(this, chartjs + '.js').then(() => {
                     console.log('script loaded');
-                    console.log('config: ' + JSON.stringify(this.config.data.datasets[0].data));
+                    //console.log('config: ' + JSON.stringify(this.config.data.datasets[0].data));
                     this.isChartJsInitialized = true;
                 //org
                 //loadScript(this, chartjs).then(() => {
@@ -101,15 +140,16 @@ export default class ParentFinancialChartContainer extends LightningElement {
                     /*
                     
                     */
-                    var unemploymentConfig = {...this.config};
-                    unemploymentConfig.data.datasets[0].data = this.inflationData; //changing this makes everything forking crash :(
+                    var unemploymentConfig = {...this.unemploymentConfig};
+                    unemploymentConfig.data.datasets[0].data = this.unemploymentData; //changing this makes everything forking crash :(
+                    console.log('unemployment data: ' + JSON.stringify(this.unemploymentData));
                     const canvas2 = document.createElement('canvas');
                     this.template.querySelector('div.unemploymentchart').appendChild(canvas2);
                     const ctx2 = canvas2.getContext('2d');
                     
                     this.chart2 = new window.Chart(ctx2, unemploymentConfig);
-                    this.chart2.canvas.parentNode.style.height = '100%';
-                    this.chart2.canvas.parentNode.style.width = '100%';
+                    //this.chart2.canvas.parentNode.style.height = '100%';
+                    //this.chart2.canvas.parentNode.style.width = '100%';
                 }).catch(error => {
                     console.log("Error:", JSON.stringify(error));
                     
