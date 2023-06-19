@@ -8,6 +8,7 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 export default class ParentFinancialChartContainer extends LightningElement {
     @track financialData;
+    gdpDataPoints = [];
     unemploymentData = [];
     inflationData = [{x: "12/02/2022", y:50}, {x: "12/05/2022", y:60}];
     @track isChartJsInitialized;
@@ -95,6 +96,45 @@ export default class ParentFinancialChartContainer extends LightningElement {
             },
         }
     };
+    @track gdpConfig = {
+        type: 'line',
+        data: {
+            labels: ["January"],
+            datasets: [{
+                fill: false,
+                label: 'GDP',
+                data: this.chartData,
+                backgroundColor: [
+                    'rgba(37, 150, 190, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(37, 150, 190, 1)'
+                ],
+                pointBackgroundColor: 'rgba(37, 150, 190, 0.2)',
+                pointBorderColor: 'rgba(37, 150, 190, 1)'
+            },
+            ]
+        },
+        options: {
+            title: {
+                display: true,
+                text: 'GDP'
+            },
+            scales: {
+                xAxes: [{
+                    type: 'time',
+
+                }],
+                yAxes: [{
+                    type: 'linear',
+                    ticks: {
+                        min: 15000,
+                        max: 20000,
+                    }
+                }]
+            },
+        }
+    }
     
     //@track interestRateData;
     //@track gdpData;
@@ -110,16 +150,19 @@ export default class ParentFinancialChartContainer extends LightningElement {
                 //format the data to pass to child charts
                 var unemploymentDataPoints = [];
                 var inflationDataPoints = [];
+                var gdpDataPoints = [];
                 sortedData.forEach((item) => {
                     if(item.Type__c == 'Unemployment'){
                         unemploymentDataPoints.push({x: item.Date__c, y: item.Value__c});
                     }else if(item.Type__c == 'CPI'){
                         inflationDataPoints.push({x: item.Date__c, y: item.Value__c});
+                    }else if(item.Type__c == 'GDP'){
+                        gdpDataPoints.push({x: item.Date__c, y: item.Value__c});
                     }
                 })
                 this.inflationData = inflationDataPoints;
                 this.unemploymentData = unemploymentDataPoints;
-
+                this.gdpData = gdpDataPoints;
                 loadScript(this, chartjs + '.js').then(() => {
                     console.log('script loaded');
                     //console.log('config: ' + JSON.stringify(this.config.data.datasets[0].data));
@@ -150,6 +193,15 @@ export default class ParentFinancialChartContainer extends LightningElement {
                     this.chart2 = new window.Chart(ctx2, unemploymentConfig);
                     //this.chart2.canvas.parentNode.style.height = '100%';
                     //this.chart2.canvas.parentNode.style.width = '100%';
+
+                    var gdpConfig = {...this.gdpConfig};
+                    gdpConfig.data.datasets[0].data = this.gdpData; //changing this makes everything forking crash :(
+                    console.log('gdp data: ' + JSON.stringify(this.gdpData));
+                    const canvas3 = document.createElement('canvas');
+                    this.template.querySelector('div.gdpchart').appendChild(canvas2);
+                    const ctx3 = canvas3.getContext('2d');
+                    
+                    this.chart2 = new window.Chart(ctx3, gdpConfig);
                 }).catch(error => {
                     console.log("Error:", JSON.stringify(error));
                     
