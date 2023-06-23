@@ -10,6 +10,7 @@ export default class ParentFinancialChartContainer extends LightningElement {
     @track financialData;
     gdpDataPoints = [];
     unemploymentData = [];
+    interestRateData = [];
     inflationData = [{x: "12/02/2022", y:50}, {x: "12/05/2022", y:60}];
     @track isChartJsInitialized;
     chart;
@@ -169,6 +170,45 @@ export default class ParentFinancialChartContainer extends LightningElement {
             },
         }
     }
+    @track interestRateConfig = {
+        type: 'line',
+        data: {
+            labels: ["January"],
+            datasets: [{
+                fill: false,
+                label: 'Interest Rates',
+                data: this.chartData,
+                backgroundColor: [
+                    'rgba(37, 150, 190, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(37, 150, 190, 1)'
+                ],
+                pointBackgroundColor: 'rgba(37, 150, 190, 0.2)',
+                pointBorderColor: 'rgba(37, 150, 190, 1)'
+            },
+            ]
+        },
+        options: {
+            title: {
+                display: true,
+                text: 'GDP'
+            },
+            scales: {
+                xAxes: [{
+                    type: 'time',
+
+                }],
+                yAxes: [{
+                    type: 'linear',
+                    ticks: {
+                        min: 15000,
+                        max: 20000,
+                    }
+                }]
+            },
+        }
+    }
     
     //@track interestRateData;
     //@track gdpData;
@@ -201,29 +241,24 @@ export default class ParentFinancialChartContainer extends LightningElement {
                 this.unemploymentData = unemploymentDataPoints;
                 this.gdpData = gdpDataPoints;
                 //local
-                //loadScript(this, chartjs + '.js').then(() => {
+                loadScript(this, chartjs + '.js').then(() => {
 
                 //org
-                loadScript(this, chartjs).then(() => {
+                //loadScript(this, chartjs).then(() => {
                     console.log('script loaded');
-                    //console.log('config: ' + JSON.stringify(this.config.data.datasets[0].data));
                     this.isChartJsInitialized = true;
-                
-                    
+                    //inflation
                     var inflationConfig = {...this.config};
                     inflationConfig.data.datasets[0].data = this.inflationData;
                     inflationConfig.data.labels = inflationLabels;
                     const canvas = document.createElement('canvas');
                     this.template.querySelector('div.chart').appendChild(canvas);
                     const ctx = canvas.getContext('2d');
-                    
                     this.chart = new window.Chart(ctx, inflationConfig);
                     this.chart.canvas.parentNode.style.height = '100%';
-                    this.chart.canvas.parentNode.style.width = '100%';
+                    //this.chart.canvas.parentNode.style.width = '100%';
 
-                    /*
-                    
-                    */
+                    //unemployment
                     var unemploymentConfig = {...this.unemploymentConfig};
                     unemploymentConfig.data.datasets[0].data = this.unemploymentData; //changing this makes everything forking crash :(
                     unemploymentConfig.data.labels = unemploymentLabels;
@@ -236,18 +271,25 @@ export default class ParentFinancialChartContainer extends LightningElement {
                     //this.chart2.canvas.parentNode.style.height = '100%';
                     //this.chart2.canvas.parentNode.style.width = '100%';
 
+                    //GDP
                     var gdpConfig = {...this.gdpConfig};
                     gdpConfig.data.datasets[0].data = this.gdpData; //changing this makes everything forking crash :(
                     console.log('gdp data: ' + JSON.stringify(this.gdpData));
                     const canvas3 = document.createElement('canvas');
-                    this.template.querySelector('div.gdpchart').appendChild(canvas2);
+                    this.template.querySelector('div.gdpchart').appendChild(canvas3);
                     const ctx3 = canvas3.getContext('2d');
-                    
-                    this.chart2 = new window.Chart(ctx3, gdpConfig);
+                    this.chart3 = new window.Chart(ctx3, gdpConfig);
+
+                    //Interest Rate
+                    var gdpConfig = {...this.gdpConfig};
+                    gdpConfig.data.datasets[0].data = this.gdpData; //changing this makes everything forking crash :(
+                    console.log('gdp data: ' + JSON.stringify(this.gdpData));
+                    const canvas4 = document.createElement('canvas');
+                    this.template.querySelector('div.interestratechart').appendChild(canvas4);
+                    const ctx4 = canvas4.getContext('2d');
+                    this.chart4 = new window.Chart(ctx4, interestRateConfig);
                 }).catch(error => {
                     console.log("Error:", JSON.stringify(error));
-                    
-                    
                 });
             })
             
