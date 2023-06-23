@@ -13,6 +13,7 @@ export default class ParentFinancialChartContainer extends LightningElement {
     interestRateData = [];
     inflationData = [{x: "12/02/2022", y:50}, {x: "12/05/2022", y:60}];
     @track isChartJsInitialized;
+    @track isLoading = true;
     chart;
     @track config = {
         type: 'line',
@@ -55,7 +56,7 @@ export default class ParentFinancialChartContainer extends LightningElement {
                             year: 'YYYY'
                         },
                         unit: 'year',
-                        min: '2020-01-01 00:00:00'
+                        //min: '2020-01-01 00:00:00'
                     },
                     ticks: {
                         stepSize: 1
@@ -155,6 +156,13 @@ export default class ParentFinancialChartContainer extends LightningElement {
                 display: true,
                 text: 'GDP'
             },
+            layout: {
+                padding: {
+                    left: 40,
+                    right: 50,
+                    bottom: 10,
+                }
+            },
             scales: {
                 xAxes: [{
                     type: 'time',
@@ -192,18 +200,24 @@ export default class ParentFinancialChartContainer extends LightningElement {
         options: {
             title: {
                 display: true,
-                text: 'GDP'
+                text: 'Interest Rates'
+            },
+            layout: {
+                padding: {
+                    left: 40,
+                    right: 50,
+                    bottom: 10,
+                }
             },
             scales: {
                 xAxes: [{
                     type: 'time',
-
                 }],
                 yAxes: [{
                     type: 'linear',
                     ticks: {
-                        min: 15000,
-                        max: 20000,
+                        min: 0,
+                        max: 15,
                     }
                 }]
             },
@@ -219,14 +233,18 @@ export default class ParentFinancialChartContainer extends LightningElement {
             .then(result => {
                 //sort all data by its date
                 var sortedData = result;
+                console.log('sorted data length before filter: ' + sortedData.length);
                 sortedData.sort((a,b) => (a.Date__c > b.Date__c) ? 1 : ((b.Date__c > a.Date__c) ? -1 : 0));
-
+                sortedData = sortedData.filter((item) => item.Date__c > '2021-01-01' );
+                console.log('sorted data length after filter: ' + sortedData.length);
                 //format the data to pass to child charts
                 var unemploymentDataPoints = [];
                 var unemploymentLabels = [];
                 var inflationDataPoints = [];
                 var inflationLabels = [];
                 var gdpDataPoints = [];
+                var interestRateDataPoints = [];
+                var interestRateLabels = [];
                 sortedData.forEach((item) => {
                     if(item.Type__c == 'Unemployment'){
                         unemploymentDataPoints.push({x: item.Date__c, y: item.Value__c});
@@ -235,11 +253,15 @@ export default class ParentFinancialChartContainer extends LightningElement {
                         inflationDataPoints.push({x: item.Date__c, y: item.Value__c});
                     }else if(item.Type__c == 'GDP'){
                         gdpDataPoints.push({x: item.Date__c, y: item.Value__c});
+                    }else if(item.Type__c == 'Interest Rate'){
+                        interestRateDataPoints.push({x: item.Date__c, y: item.Value__c});
+                        interestRateLabels.push(item.Date__c);
                     }
                 })
                 this.inflationData = inflationDataPoints;
                 this.unemploymentData = unemploymentDataPoints;
                 this.gdpData = gdpDataPoints;
+                this.interestRateData = interestRateDataPoints;
                 //local
                 loadScript(this, chartjs + '.js').then(() => {
 
@@ -281,15 +303,19 @@ export default class ParentFinancialChartContainer extends LightningElement {
                     this.chart3 = new window.Chart(ctx3, gdpConfig);
 
                     //Interest Rate
-                    var gdpConfig = {...this.gdpConfig};
-                    gdpConfig.data.datasets[0].data = this.gdpData; //changing this makes everything forking crash :(
-                    console.log('gdp data: ' + JSON.stringify(this.gdpData));
+                    var interestRateConfig = {...this.interestRateConfig};
+                    interestRateConfig.data.datasets[0].data = this.interestRateData; //changing this makes everything forking crash :(
+                    interestRateConfig.data.labels = interestRateConfig;
+                    console.log('interest rate data: ' + JSON.stringify(this.interestRateData));
                     const canvas4 = document.createElement('canvas');
                     this.template.querySelector('div.interestratechart').appendChild(canvas4);
                     const ctx4 = canvas4.getContext('2d');
                     this.chart4 = new window.Chart(ctx4, interestRateConfig);
+
+                    this.isLoading = false;
                 }).catch(error => {
                     console.log("Error:", JSON.stringify(error));
+                    this.isLoading = false;
                 });
             })
             
