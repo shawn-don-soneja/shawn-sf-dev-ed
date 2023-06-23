@@ -33,15 +33,31 @@ export default class ParentFinancialChartContainer extends LightningElement {
             ]
         },
         options: {
+            layout: {
+                padding: {
+                    left: 40,
+                    right: 50,
+                    bottom: 10,
+                }
+            },
             title: {
-                display: true,
+                display: false,
                 text: 'CPI Data'
             },
             scales: {
                 xAxes: [{
                     type: 'time',
-                    time:{
-                        min: 1681956535,
+                    time: {
+                        // Luxon format string
+                        tooltipFormat: 'MMM YYYY',
+                        displayFormats: {
+                            year: 'YYYY'
+                        },
+                        unit: 'year',
+                        min: '2020-01-01 00:00:00'
+                    },
+                    ticks: {
+                        stepSize: 1
                     }
                     
                 }],
@@ -60,7 +76,7 @@ export default class ParentFinancialChartContainer extends LightningElement {
     @track unemploymentConfig = {
         type: 'line',
         data: {
-            labels: ["January"],
+            labels: ["January","January","January","January","January",],
             datasets: [{
                 fill: false,
                 label: 'Unemployment Rate',
@@ -77,20 +93,38 @@ export default class ParentFinancialChartContainer extends LightningElement {
             ]
         },
         options: {
+            layout: {
+                padding: {
+                    left: 40,
+                    right: 50,
+                    bottom: 10,
+                }
+            },
             title: {
-                display: true,
+                display: false,
                 text: 'Unemployment Data'
             },
             scales: {
                 xAxes: [{
                     type: 'time',
-
+                    time: {
+                        // Luxon format string
+                        tooltipFormat: 'MMM YYYY',
+                        displayFormats: {
+                            year: 'YYYY'
+                        },
+                        unit: 'year'
+                    },
+                    ticks: {
+                        stepSize: 0.5,
+                    }
                 }],
                 yAxes: [{
                     type: 'linear',
                     ticks: {
                         min: 15000,
                         max: 20000,
+                        stepSize: 1000,
                     }
                 }]
             },
@@ -149,11 +183,14 @@ export default class ParentFinancialChartContainer extends LightningElement {
 
                 //format the data to pass to child charts
                 var unemploymentDataPoints = [];
+                var unemploymentLabels = [];
                 var inflationDataPoints = [];
+                var inflationLabels = [];
                 var gdpDataPoints = [];
                 sortedData.forEach((item) => {
                     if(item.Type__c == 'Unemployment'){
                         unemploymentDataPoints.push({x: item.Date__c, y: item.Value__c});
+                        unemploymentLabels.push(item.Date__c);
                     }else if(item.Type__c == 'CPI'){
                         inflationDataPoints.push({x: item.Date__c, y: item.Value__c});
                     }else if(item.Type__c == 'GDP'){
@@ -163,15 +200,19 @@ export default class ParentFinancialChartContainer extends LightningElement {
                 this.inflationData = inflationDataPoints;
                 this.unemploymentData = unemploymentDataPoints;
                 this.gdpData = gdpDataPoints;
-                loadScript(this, chartjs + '.js').then(() => {
+                //local
+                //loadScript(this, chartjs + '.js').then(() => {
+
+                //org
+                loadScript(this, chartjs).then(() => {
                     console.log('script loaded');
                     //console.log('config: ' + JSON.stringify(this.config.data.datasets[0].data));
                     this.isChartJsInitialized = true;
-                //org
-                //loadScript(this, chartjs).then(() => {
+                
                     
                     var inflationConfig = {...this.config};
                     inflationConfig.data.datasets[0].data = this.inflationData;
+                    inflationConfig.data.labels = inflationLabels;
                     const canvas = document.createElement('canvas');
                     this.template.querySelector('div.chart').appendChild(canvas);
                     const ctx = canvas.getContext('2d');
@@ -185,6 +226,7 @@ export default class ParentFinancialChartContainer extends LightningElement {
                     */
                     var unemploymentConfig = {...this.unemploymentConfig};
                     unemploymentConfig.data.datasets[0].data = this.unemploymentData; //changing this makes everything forking crash :(
+                    unemploymentConfig.data.labels = unemploymentLabels;
                     console.log('unemployment data: ' + JSON.stringify(this.unemploymentData));
                     const canvas2 = document.createElement('canvas');
                     this.template.querySelector('div.unemploymentchart').appendChild(canvas2);
@@ -210,12 +252,4 @@ export default class ParentFinancialChartContainer extends LightningElement {
             })
             
     } 
-
-    
-
-    connectedCallback(){
-        //
-
-        
-    }
 }
