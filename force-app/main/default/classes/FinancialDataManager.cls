@@ -101,45 +101,49 @@ public class FinancialDataManager {
         return listToInsert;
     }
     //Interest Rates
-    public List<Financial_Data__c> retrieveInterestRates_INDEV(){
+    public List<Financial_Data__c> retrieveInterestRates(){
+        System.debug('REQUEST INTEREST RATES');
         Http http = new Http();
         HttpRequest request = new HttpRequest();
-        request.setEndpoint('https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v2/accounting/od/avg_interest_rates?sort=-record_date&filter=security_desc:eq:United States Savings Inflation Securities');
+        request.setEndpoint('https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v2/accounting/od/avg_interest_rates?sort=-record_date&filter=security_desc:eq:United%20States%20Savings%20Inflation%20Securities');
         request.setMethod('GET');
+        System.debug('Request: ' + request);
         HttpResponse response = http.send(request);
         List<Financial_Data__c> listToInsert = new List<Financial_Data__c>();
         // If the request is successful, parse the JSON response.
         if(response.getStatusCode() == 200) {
+            System.debug('Success | Response: ' + response);
             // Deserialize the JSON string into collections of primitive data types.
             Map<String, Object> parsedResponse = (Map<String, Object>) JSON.deserializeUntyped(response.getBody());
             // HERE'S THE LOGIC FOR PARSING THIS SPECIFIC API
-           	Map<String, Object> results = (Map<String, Object>) parsedResponse.get('data');
-            List<Object> series = (List<Object>) results.get('series');
-            Map<String, Object> seriesData = (Map<String, Object>) series[0];
-            List<Object> data = (List<Object>) seriesData.get('data');
+            List<Object> data = (List<Object>) parsedResponse.get('data');
             System.debug('Received the following data:' + data);
             System.debug('Data Length' + data.size());
             
             for(Object dataEntry : data){
                 Map<String, Object> parsedDataEntry = (Map<String, Object>) dataEntry;
-                Integer integerYear = Integer.valueOf(parsedDataEntry.get('year'));
-                String month = (String) parsedDataEntry.get('period');
+                Integer integerYear = Integer.valueOf(parsedDataEntry.get('record_calendar_year'));
+                String month = (String) parsedDataEntry.get('record_calendar_month');
                 month = month.substring(1);
                 Integer integerMonth = Integer.valueOf(month);
                 System.debug('received month: ' + month + ' | new month: ' + integerMonth);
                 System.debug('data: ' + dataEntry);
                 Date entryDate = date.newInstance(integerYear, integerMonth, 1);
-                String stringValue = (String) parsedDataEntry.get('value');
+                String stringValue = (String) parsedDataEntry.get('avg_interest_rate_amt');
                 Decimal value = Decimal.valueOf(stringValue);
-                    Financial_Data__c itemToInsert = new Financial_Data__c(Type__c='Unemployment',Sub_Type__c='Local Area', Date__c=entryDate, Value__c=value);
+                    Financial_Data__c itemToInsert = new Financial_Data__c(Type__c='Interest Rate',Sub_Type__c='Average Interest Rates', Date__c=entryDate, Value__c=value);
             	listToInsert.add(itemToInsert);
             }
             System.debug('list:' + listToInsert);
-            //insert listToInsert;
+            System.debug('list length:' + listToInsert.size());
+            
+            insert listToInsert;
             /*
 			
 			*/
             
+        }else{
+            System.debug('Error | Response: ' + response);
         }
         //List<Financial_Data__c> output = new List<Financial_Data__c>();
         return listToInsert;
