@@ -269,10 +269,10 @@ export default class ParentFinancialChartContainer extends LightningElement {
                 this.gdpData = gdpDataPoints;
                 this.interestRateData = interestRateDataPoints;
                 //local
-                loadScript(this, chartjs + '.js').then(() => {
+                //loadScript(this, chartjs + '.js').then(() => {
 
                 //org
-                //loadScript(this, chartjs).then(() => {
+                loadScript(this, chartjs).then(() => {
                     console.log('script loaded');
                     this.isChartJsInitialized = true;
                     //inflation
