@@ -6,7 +6,7 @@
     <div class="slds-grid slds-gutters">
         <div class="slds-col slds-size_1-of-1 slds-large-size_6-of-12">
             <div if:false={isLoading} style="width:600px;">
-                <lightning-card title="Inflation Rate" icon-name="utility:money">
+                <lightning-card title="Inflation Rate" icon-name="utility:cart">
                     <div class="slds-m-left_medium slds-text-color_weak" >
                         More Info<lightning-helptext content="This is data from the Bureau of Labor Statistics. Here, we're tracking the CPI of Rice in the US, which I'm using to be representative of a staple good. If this measure is going up, prices are going up, and vice versa."></lightning-helptext>
                     </div>
@@ -14,7 +14,7 @@
                 </lightning-card>
             </div> 
             <div if:false={isLoading} style="width:600px;">
-                <lightning-card title="Unemployment Rate" icon-name="utility:money">
+                <lightning-card title="Unemployment Rate" icon-name="utility:people">
                     <div class="slds-m-left_medium slds-text-color_weak" >
                         More Info<lightning-helptext content="This is data from the Bureau of Labor Statistics. Here, we're tracking a time series called 'Local Area Unemployment'. I am using this to be generally representative of Unemployment in the US. If this is going up, unemployment is going up, and vice versa."></lightning-helptext>
                     </div>
@@ -25,7 +25,7 @@
 
         <div class="slds-col slds-size_1-of-1 slds-large-size_6-of-12">
             <div if:false={isLoading} style="width:600px;">
-                <lightning-card title="GDP" icon-name="utility:money">
+                <lightning-card title="GDP" icon-name="utility:world">
                     <div class="slds-m-left_medium slds-text-color_weak" >
                         More Info<lightning-helptext content="This is data from the Bureau of Economic Analysis. Here, we're tracking the overall US GDP. If this is going up, US GDP is going up, and vice versa."></lightning-helptext>
                     </div>

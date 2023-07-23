@@ -84,13 +84,13 @@ export default class ParentFinancialChartContainer extends LightningElement {
                 label: 'Unemployment Rate',
                 data: this.chartData,
                 backgroundColor: [
-                    'rgba(37, 150, 190, 0.2)'
+                    'rgba(75, 192, 217, 0.2)'
                 ],
                 borderColor: [
-                    'rgba(37, 150, 190, 1)'
+                    'rgba(75, 192, 217, 1)'
                 ],
-                pointBackgroundColor: 'rgba(37, 150, 190, 0.2)',
-                pointBorderColor: 'rgba(37, 150, 190, 1)'
+                pointBackgroundColor: 'rgba(75, 192, 217, 0.2)',
+                pointBorderColor: 'rgba(75, 192, 217, 1)'
             },
             ]
         },
@@ -141,13 +141,13 @@ export default class ParentFinancialChartContainer extends LightningElement {
                 label: 'GDP',
                 data: this.chartData,
                 backgroundColor: [
-                    'rgba(37, 150, 190, 0.2)'
+                    'rgba(97, 161, 223, 0.2)'
                 ],
                 borderColor: [
-                    'rgba(37, 150, 190, 1)'
+                    'rgba(97, 161, 223, 1)'
                 ],
-                pointBackgroundColor: 'rgba(37, 150, 190, 0.2)',
-                pointBorderColor: 'rgba(37, 150, 190, 1)'
+                pointBackgroundColor: 'rgba(97, 161, 223, 0.2)',
+                pointBorderColor: 'rgba(97, 161, 223, 1)'
             },
             ]
         },
@@ -176,9 +176,6 @@ export default class ParentFinancialChartContainer extends LightningElement {
                     },
                     min: '2021-11-07 00:00:00',
                 }],
-                x: {
-                    min: '2021-11-07 00:00:00',
-                }
             },
         }
     }
@@ -191,13 +188,13 @@ export default class ParentFinancialChartContainer extends LightningElement {
                 label: 'Interest Rates',
                 data: this.chartData,
                 backgroundColor: [
-                    'rgba(37, 150, 190, 0.2)'
+                    'rgba(142, 170, 247, 0.2)'
                 ],
                 borderColor: [
-                    'rgba(37, 150, 190, 1)'
+                    'rgba(142, 170, 247, 1)'
                 ],
-                pointBackgroundColor: 'rgba(37, 150, 190, 0.2)',
-                pointBorderColor: 'rgba(37, 150, 190, 1)'
+                pointBackgroundColor: 'rgba(142, 170, 247, 0.2)',
+                pointBorderColor: 'rgba(142, 170, 247, 1)'
             },
             ]
         },
