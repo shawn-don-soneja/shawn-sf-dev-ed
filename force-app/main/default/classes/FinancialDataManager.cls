@@ -153,61 +153,70 @@ public class FinancialDataManager {
     public List<Financial_Data__c> retrieveGDP(){
         Http http = new Http();
         HttpRequest request = new HttpRequest();
-        request.setEndpoint('http://apps.bea.gov/api/data?&UserID=51045F74-FD45-4708-8F7A-680042A6F37A&method=GetData&datasetname=GDPByIndustry&Frequency=Q&Industry=ALL&TableID=1&Year=2021,2022,2023&ResultFormat=JSON');
+        request.setEndpoint('https://apps.bea.gov/api/data?&UserID=51045F74-FD45-4708-8F7A-680042A6F37A&method=GetData&datasetname=GDPByIndustry&Frequency=Q&Industry=ALL&TableID=1&Year=2021,2022,2023&ResultFormat=JSON');
         request.setMethod('GET');
         HttpResponse response = http.send(request);
         List<Financial_Data__c> listToInsert = new List<Financial_Data__c>();
         // If the request is successful, parse the JSON response.
         if(response.getStatusCode() == 200) {
+            System.debug('Response: ' + response);
             // Deserialize the JSON string into collections of primitive data types.
             Map<String, Object> parsedResponse = (Map<String, Object>) JSON.deserializeUntyped(response.getBody());
             // HERE'S THE LOGIC FOR PARSING THIS SPECIFIC API
            	Map<String, Object> results = (Map<String, Object>) parsedResponse.get('BEAAPI');
-            List<Object> series = (List<Object>) results.get('RESULTS');
+            List<Object> series = (List<Object>) results.get('Results');
             Map<String, Object> seriesData = (Map<String, Object>) series[0];
             List<Object> data = (List<Object>) seriesData.get('Data');
             System.debug('Received the following data:' + data);
             System.debug('Data Length' + data.size());
-            
+
             for(Object dataEntry : data){
                 Map<String, Object> parsedDataEntry = (Map<String, Object>) dataEntry;
-                Integer integerYear = Integer.valueOf(parsedDataEntry.get('Year'));
-                String quarter = (String) parsedDataEntry.get('Quarter');
-                Integer quarter_int = 0;
-                Integer integerMonth = 0;
-                if(quarter == 'I'){
-                    quarter_int = 1;
-                    integerMonth = 3;
-                }else if(quarter == 'II'){
-                    quarter_int = 2;
-                    integerMonth = 6;
-                }else if(quarter == 'III'){
-                    quarter_int = 3;
-                    integerMonth = 9;
-                }else if(quarter == 'IV'){
-                    quarter_int = 4;
-                    integerMonth = 12;
+                String industryType = (String) parsedDataEntry.get('Industry');
+
+                //we receive GDP across industries with this query, and we only want to show overall GDP figure right now
+                if(industryType == 'GDP'){
+                    Integer integerYear = Integer.valueOf(parsedDataEntry.get('Year'));
+                    String quarter = (String) parsedDataEntry.get('Quarter');
+                    Integer quarter_int = 0;
+                    Integer integerMonth = 0;
+                    if(quarter == 'I'){
+                        quarter_int = 1;
+                        integerMonth = 3;
+                    }else if(quarter == 'II'){
+                        quarter_int = 2;
+                        integerMonth = 6;
+                    }else if(quarter == 'III'){
+                        quarter_int = 3;
+                        integerMonth = 9;
+                    }else if(quarter == 'IV'){
+                        quarter_int = 4;
+                        integerMonth = 12;
+                    }
+                    //quarter = quarter.substring(1);
+                    //Integer integerMonth = 00;
+                    System.debug('received quarter: ' + quarter + ' | new month: ' + quarter_int);
+                    System.debug('data: ' + dataEntry);
+                    Date entryDate = date.newInstance(integerYear, integerMonth, 1);
+                    String stringValue = (String) parsedDataEntry.get('DataValue');
+                    Decimal value = Decimal.valueOf(stringValue);
+                    Financial_Data__c itemToInsert = new Financial_Data__c(Type__c='GDP', Date__c=entryDate, Value__c=value);
+                    listToInsert.add(itemToInsert);
                 }
-                //quarter = quarter.substring(1);
-                //Integer integerMonth = 00;
-                System.debug('received quarter: ' + quarter + ' | new month: ' + quarter_int);
-                System.debug('data: ' + dataEntry);
-                Date entryDate = date.newInstance(integerYear, integerMonth, 1);
-                String stringValue = (String) parsedDataEntry.get('DataValue');
-                Decimal value = Decimal.valueOf(stringValue);
-                Financial_Data__c itemToInsert = new Financial_Data__c(Type__c='GDP', Date__c=entryDate, Value__c=value);
-            	listToInsert.add(itemToInsert);
+                
             }
             System.debug('list:' + listToInsert);
-            //insert listToInsert;
-            /*
-			
-			*/
-            
+            System.debug('length: ' + listToInsert.size());
+            insert listToInsert;
         }else{
+            if(response.getStatusCode() == 301 || response.getStatusCode() == 302){    
+                request.setEndpoint(response.getHeader('Location'));
+                HttpResponse response2 = http.send(request);
+                System.debug('Response2' + response2);
+            }
             System.debug('Error:' + response);
         }
-        //List<Financial_Data__c> output = new List<Financial_Data__c>();
+        //List<Financial_Data__c> output = new List<Financial_Data__c>();        
         return listToInsert;
     }
     

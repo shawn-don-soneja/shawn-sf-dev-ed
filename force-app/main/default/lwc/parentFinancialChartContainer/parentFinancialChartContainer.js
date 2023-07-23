@@ -166,15 +166,19 @@ export default class ParentFinancialChartContainer extends LightningElement {
             scales: {
                 xAxes: [{
                     type: 'time',
-
+                    
                 }],
                 yAxes: [{
                     type: 'linear',
                     ticks: {
                         min: 15000,
-                        max: 20000,
-                    }
-                }]
+                        max: 30000,
+                    },
+                    min: '2021-11-07 00:00:00',
+                }],
+                x: {
+                    min: '2021-11-07 00:00:00',
+                }
             },
         }
     }
@@ -243,6 +247,7 @@ export default class ParentFinancialChartContainer extends LightningElement {
                 var inflationDataPoints = [];
                 var inflationLabels = [];
                 var gdpDataPoints = [];
+                var gdpLabels = [];
                 var interestRateDataPoints = [];
                 var interestRateLabels = [];
                 sortedData.forEach((item) => {
@@ -253,6 +258,7 @@ export default class ParentFinancialChartContainer extends LightningElement {
                         inflationDataPoints.push({x: item.Date__c, y: item.Value__c});
                     }else if(item.Type__c == 'GDP'){
                         gdpDataPoints.push({x: item.Date__c, y: item.Value__c});
+                        gdpLabels.push(item.Date__c);
                     }else if(item.Type__c == 'Interest Rate'){
                         interestRateDataPoints.push({x: item.Date__c, y: item.Value__c});
                         interestRateLabels.push(item.Date__c);
@@ -296,6 +302,7 @@ export default class ParentFinancialChartContainer extends LightningElement {
                     //GDP
                     var gdpConfig = {...this.gdpConfig};
                     gdpConfig.data.datasets[0].data = this.gdpData; //changing this makes everything forking crash :(
+                    gdpConfig.data.labels = gdpLabels;
                     console.log('gdp data: ' + JSON.stringify(this.gdpData));
                     const canvas3 = document.createElement('canvas');
                     this.template.querySelector('div.gdpchart').appendChild(canvas3);
