@@ -21,7 +21,7 @@ public class FinancialDataManager {
     public List<Financial_Data__c> retrieveCPI_Rice(){
         Http http = new Http();
         HttpRequest request = new HttpRequest();
-        request.setEndpoint('https://api.bls.gov/publicAPI/v2/timeseries/data/APU0000701312?registrationkey=ba862d2378f345e48d1f64bfda019ba2');
+        request.setEndpoint('callout:BLS_CPI');
         request.setMethod('GET');
         HttpResponse response = http.send(request);
         List<Financial_Data__c> listToInsert = new List<Financial_Data__c>();
@@ -43,8 +43,8 @@ public class FinancialDataManager {
                 String month = (String) parsedDataEntry.get('period');
                 month = month.substring(1);
                 Integer integerMonth = Integer.valueOf(month);
-                System.debug('received month: ' + month + ' | new month: ' + integerMonth);
-                System.debug('data: ' + dataEntry);
+                //System.debug('received month: ' + month + ' | new month: ' + integerMonth);
+                //System.debug('data: ' + dataEntry);
                 Date entryDate = date.newInstance(integerYear, integerMonth, 1);
                 String stringValue = (String) parsedDataEntry.get('value');
                 Decimal value = Decimal.valueOf(stringValue);
@@ -65,7 +65,7 @@ public class FinancialDataManager {
     public List<Financial_Data__c> retrieveUnemployment(){
         Http http = new Http();
         HttpRequest request = new HttpRequest();
-        request.setEndpoint('https://api.bls.gov/publicAPI/v2/timeseries/data/LAUCN040010000000005?registrationkey=ba862d2378f345e48d1f64bfda019ba2');
+        request.setEndpoint('callout:BLS_Unemployment');
         request.setMethod('GET');
         HttpResponse response = http.send(request);
         List<Financial_Data__c> listToInsert = new List<Financial_Data__c>();
@@ -87,8 +87,8 @@ public class FinancialDataManager {
                 String month = (String) parsedDataEntry.get('period');
                 month = month.substring(1);
                 Integer integerMonth = Integer.valueOf(month);
-                System.debug('received month: ' + month + ' | new month: ' + integerMonth);
-                System.debug('data: ' + dataEntry);
+                //System.debug('received month: ' + month + ' | new month: ' + integerMonth);
+                //System.debug('data: ' + dataEntry);
                 Date entryDate = date.newInstance(integerYear, integerMonth, 1);
                 String stringValue = (String) parsedDataEntry.get('value');
                 Decimal value = Decimal.valueOf(stringValue);
@@ -257,9 +257,15 @@ public class FinancialDataManager {
         
         //retrieve data from api's and filter to only new data to insert
         
-        //List<Financial_Data__c> cpi_data = retrieveCPI_Rice(); //CPI
+        List<Financial_Data__c> cpi_data = retrieveCPI_Rice(); //CPI
+        cpi_data = filterForNewData(CPI, latestCPI, cpi_data);
+        System.debug('CPI to Insert Length:' + cpi_data.size());
+        System.debug('CPI to Insert:' + cpi_data);
         
-        //List<Financial_Data__c> unemployment_data = retrieveUnemployment(); //unemployment data
+        List<Financial_Data__c> unemployment_data = retrieveUnemployment(); //unemployment data
+        unemployment_data = filterForNewData(UNEMPLOYMENT, latestUnemployment, unemployment_data);
+        System.debug('UNEMPLOYMENT to Insert Length:' + unemployment_data.size());
+        System.debug('UNEMPLOYMENT to Insert:' + unemployment_data);
         
         List<Financial_Data__c> interest_rate_data = retrieveInterestRates(); //interest rates
         interest_rate_data = filterForNewData(INTEREST_RATE, latestInterestRates, interest_rate_data);
