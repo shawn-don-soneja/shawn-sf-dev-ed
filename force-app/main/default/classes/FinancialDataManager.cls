@@ -163,6 +163,7 @@ public class FinancialDataManager {
         request.setMethod('GET');
         HttpResponse response = http.send(request);
         List<Financial_Data__c> listToInsert = new List<Financial_Data__c>();
+        
         // If the request is successful, parse the JSON response.
         if(response.getStatusCode() == 200) {
             System.debug('Response: ' + response);
@@ -256,33 +257,34 @@ public class FinancialDataManager {
         }
         
         //retrieve data from api's and filter to only new data to insert
+        List<Financial_Data__c> toInsert = new List<Financial_Data__c>();
         
         List<Financial_Data__c> cpi_data = retrieveCPI_Rice(); //CPI
         cpi_data = filterForNewData(CPI, latestCPI, cpi_data);
         System.debug('CPI to Insert Length:' + cpi_data.size());
         System.debug('CPI to Insert:' + cpi_data);
+        toInsert.addAll(cpi_data);
         
         List<Financial_Data__c> unemployment_data = retrieveUnemployment(); //unemployment data
         unemployment_data = filterForNewData(UNEMPLOYMENT, latestUnemployment, unemployment_data);
         System.debug('UNEMPLOYMENT to Insert Length:' + unemployment_data.size());
         System.debug('UNEMPLOYMENT to Insert:' + unemployment_data);
+        toInsert.addAll(unemployment_data);
         
         List<Financial_Data__c> interest_rate_data = retrieveInterestRates(); //interest rates
         interest_rate_data = filterForNewData(INTEREST_RATE, latestInterestRates, interest_rate_data);
         System.debug('Interest Rates to Insert Length:' + interest_rate_data.size());
         System.debug('Interest Rates to Insert:' + interest_rate_data);
+		toInsert.addAll(interest_rate_data);
+
         
         List<Financial_Data__c> gdp_data = retrieveGDP();//GDP
         gdp_data = filterForNewData(GDP, latestGDP, gdp_data);
         System.debug('GDP to Insert Length:' + gdp_data.size());
         System.debug('GDP to Insert:' + gdp_data);
+        toInsert.addAll(gdp_data);
         
-        
-        //insert only newer data
-                
-        //delete allData;
-        //insert cpi_data;
-        //insert unemployment_data;
+        insert toInsert;
     }
     
     public List<Financial_Data__c> filterForNewData (String dataType, Date latestDate, List<Financial_Data__c> data){
