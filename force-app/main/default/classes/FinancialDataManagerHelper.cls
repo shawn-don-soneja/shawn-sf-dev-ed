@@ -1,6 +1,6 @@
 public class FinancialDataManagerHelper {
     //This function converts dates, to relative, numerical values, so that the LTSM model has more usable data
-    public static void normalizeDates(List<Financial_Data__c> data){
+    public static List<Financial_Data__c> normalizeDates(List<Financial_Data__c> data){
         //orders all dates
         //gives relative value, based on the month & year
 
@@ -23,5 +23,12 @@ public class FinancialDataManagerHelper {
         }
         
         */
+
+        for(Integer i=0; i<data.size(); i++){
+            data[i].Index__c = i+1;
+        }
+
+        List<Financial_Data__c> outputList = new List<Financial_Data__c>();
+        return outputList;
     }
 }

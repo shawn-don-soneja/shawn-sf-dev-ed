@@ -16,6 +16,95 @@ public class FinancialDataManager {
         }
         return output;
     }
+
+    //Data Refresher
+    public void refreshAllFinancialData(){
+        List<Financial_Data__c> allData = [SELECT Id, Type__c, Value__c, Date__c FROM Financial_Data__c ORDER BY Date__c DESC];
+        
+        //data we need, to figure out what data from the API should be inserted into DB
+        //we only insert data points which are NEWER than those we have stored in the DB
+        Date latestCPI;
+        Date latestGDP;
+        Date latestUnemployment;
+        Date latestInterestRates;
+        for(Financial_Data__c entry : allData){
+            if(entry.Type__c == 'CPI' && latestCPI == null){
+                latestCPI = entry.Date__c;
+            }
+            if(entry.Type__c == 'GDP' && latestGDP == null){
+                latestGDP = entry.Date__c;
+            }
+            if(entry.Type__c == 'Unemployment' && latestUnemployment == null){
+                latestUnemployment = entry.Date__c;
+            }
+            if(entry.Type__c == 'Interest Rate' && latestInterestRates == null){
+                latestInterestRates = entry.Date__c;
+            }
+            if(latestCPI != null && latestGDP != null && latestUnemployment != null && latestInterestRates != null){
+                break;
+            }
+        }
+        
+        //retrieve data from api's and filter to only new data to insert
+        List<Financial_Data__c> toInsert = new List<Financial_Data__c>();
+        
+        List<Financial_Data__c> cpi_data = retrieveCPI_Rice(); //CPI
+        cpi_data = filterForNewData(CPI, latestCPI, cpi_data);
+        System.debug('CPI to Insert Length:' + cpi_data.size());
+        System.debug('CPI to Insert:' + cpi_data);
+        toInsert.addAll(cpi_data);
+        //send for predictions
+        
+        List<Financial_Data__c> unemployment_data = retrieveUnemployment(); //unemployment data
+        unemployment_data = filterForNewData(UNEMPLOYMENT, latestUnemployment, unemployment_data);
+        System.debug('UNEMPLOYMENT to Insert Length:' + unemployment_data.size());
+        System.debug('UNEMPLOYMENT to Insert:' + unemployment_data);
+        toInsert.addAll(unemployment_data);
+        //send for predictions
+
+        
+        List<Financial_Data__c> interest_rate_data = retrieveInterestRates(); //interest rates
+        interest_rate_data = filterForNewData(INTEREST_RATE, latestInterestRates, interest_rate_data);
+        System.debug('Interest Rates to Insert Length:' + interest_rate_data.size());
+        System.debug('Interest Rates to Insert:' + interest_rate_data);
+		toInsert.addAll(interest_rate_data);
+        //send for predictions
+
+        
+        List<Financial_Data__c> gdp_data = retrieveGDP();//GDP
+        gdp_data = filterForNewData(GDP, latestGDP, gdp_data);
+        System.debug('GDP to Insert Length:' + gdp_data.size());
+        System.debug('GDP to Insert:' + gdp_data);
+        toInsert.addAll(gdp_data);
+        //send for predictions
+
+        
+        insert toInsert;
+    }
+    
+    public List<Financial_Data__c> filterForNewData (String dataType, Date latestDate, List<Financial_Data__c> data){
+		Date latestData;
+        
+        List<Financial_Data__c> toReturn = new List<Financial_Data__c>();
+        for(Financial_Data__c entry : data){
+            if(entry.Type__c == dataType && entry.Date__c > latestDate){
+                toReturn.add(entry);
+            }
+        }
+        //then return only GDP entries whose data is greater than the latest, stored GDP entry
+        return toReturn;
+    }
+
+    public List<Financial_Data__c> predictOnData(List<Financial_Data__c> data){
+        //normalize
+        List<Financial_Data__c> normalizedData = FinancialDataManagerHelper.normalizeDates(data);
+
+        //request for predictions
+
+        //return list of predictions to be inserted
+        List<Financial_Data__c> outputList = new List<Financial_Data__c>();
+        return outputList;
+    }
 	
     //CPI
     public List<Financial_Data__c> retrieveCPI_Rice(){
@@ -117,6 +206,7 @@ public class FinancialDataManager {
         System.debug('Request: ' + request);
         HttpResponse response = http.send(request);
         List<Financial_Data__c> listToInsert = new List<Financial_Data__c>();
+
         // If the request is successful, parse the JSON response.
         if(response.getStatusCode() == 200) {
             System.debug('Success | Response: ' + response);
@@ -163,7 +253,6 @@ public class FinancialDataManager {
         request.setMethod('GET');
         HttpResponse response = http.send(request);
         List<Financial_Data__c> listToInsert = new List<Financial_Data__c>();
-        
         // If the request is successful, parse the JSON response.
         if(response.getStatusCode() == 200) {
             System.debug('Response: ' + response);
@@ -228,75 +317,5 @@ public class FinancialDataManager {
         return listToInsert;
     }
     
-    //Data Refresher
-    public void refreshAllFinancialData(){
-        List<Financial_Data__c> allData = [SELECT Id, Type__c, Value__c, Date__c FROM Financial_Data__c ORDER BY Date__c DESC];
-        
-        //data we need, to figure out what data from the API should be inserted into DB
-        //we only insert data points which are NEWER than those we have stored in the DB
-        Date latestCPI;
-        Date latestGDP;
-        Date latestUnemployment;
-        Date latestInterestRates;
-        for(Financial_Data__c entry : allData){
-            if(entry.Type__c == 'CPI' && latestCPI == null){
-                latestCPI = entry.Date__c;
-            }
-            if(entry.Type__c == 'GDP' && latestGDP == null){
-                latestGDP = entry.Date__c;
-            }
-            if(entry.Type__c == 'CPI' && latestUnemployment == null){
-                latestUnemployment = entry.Date__c;
-            }
-            if(entry.Type__c == 'CPI' && latestInterestRates == null){
-                latestInterestRates = entry.Date__c;
-            }
-            if(latestCPI != null && latestGDP != null && latestUnemployment != null && latestInterestRates != null){
-                break;
-            }
-        }
-        
-        //retrieve data from api's and filter to only new data to insert
-        List<Financial_Data__c> toInsert = new List<Financial_Data__c>();
-        
-        List<Financial_Data__c> cpi_data = retrieveCPI_Rice(); //CPI
-        cpi_data = filterForNewData(CPI, latestCPI, cpi_data);
-        System.debug('CPI to Insert Length:' + cpi_data.size());
-        System.debug('CPI to Insert:' + cpi_data);
-        toInsert.addAll(cpi_data);
-        
-        List<Financial_Data__c> unemployment_data = retrieveUnemployment(); //unemployment data
-        unemployment_data = filterForNewData(UNEMPLOYMENT, latestUnemployment, unemployment_data);
-        System.debug('UNEMPLOYMENT to Insert Length:' + unemployment_data.size());
-        System.debug('UNEMPLOYMENT to Insert:' + unemployment_data);
-        toInsert.addAll(unemployment_data);
-        
-        List<Financial_Data__c> interest_rate_data = retrieveInterestRates(); //interest rates
-        interest_rate_data = filterForNewData(INTEREST_RATE, latestInterestRates, interest_rate_data);
-        System.debug('Interest Rates to Insert Length:' + interest_rate_data.size());
-        System.debug('Interest Rates to Insert:' + interest_rate_data);
-		toInsert.addAll(interest_rate_data);
-
-        
-        List<Financial_Data__c> gdp_data = retrieveGDP();//GDP
-        gdp_data = filterForNewData(GDP, latestGDP, gdp_data);
-        System.debug('GDP to Insert Length:' + gdp_data.size());
-        System.debug('GDP to Insert:' + gdp_data);
-        toInsert.addAll(gdp_data);
-        
-        insert toInsert;
-    }
     
-    public List<Financial_Data__c> filterForNewData (String dataType, Date latestDate, List<Financial_Data__c> data){
-		Date latestData;
-        
-        List<Financial_Data__c> toReturn = new List<Financial_Data__c>();
-        for(Financial_Data__c entry : data){
-            if(entry.Type__c == dataType && entry.Date__c > latestDate){
-                toReturn.add(entry);
-            }
-        }
-        //then return only GDP entries whose data is greater than the latest, stored GDP entry
-        return toReturn;
-    }
 }
