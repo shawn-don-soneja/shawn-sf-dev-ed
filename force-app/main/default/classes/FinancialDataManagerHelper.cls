@@ -5,33 +5,29 @@ public class FinancialDataManagerHelper {
     private static String UNEMPLOYMENT = 'Unemployment';
 
     //This function converts dates, to relative, numerical values, so that the LTSM model has more usable data
-    public static List<Financial_Data__c> normalizeDates(List<Financial_Data__c> data){
-        //orders all dates
-        //gives relative value based on index order of the data
+    public static List<List<List<Object>>> normalizeDates(List<Financial_Data__c> data, String type){        
+        ////lets return the x and y arrays, as arrays of arrays
+        List<List<Integer>> xArray = new List<List<Integer>>();
+        List<List<Double>> yArray = new List<List<Double>>();
 
-        Integer GDP_Index = 1;
-        Integer CPI_Index = 1;
-        Integer Unemploment_Index = 1;
-        Integer Interest_Rate_Index = 1;
+        Integer entryIndex = 1;
 
         for(Integer i=0; i<data.size(); i++){
             Financial_Data__c entry = data[i];
-            if(entry.Type__c == GDP){
-                data[i].Index__c = GDP_Index;
-                GDP_Index++;
-            }else if(entry.Type__c == CPI){
-                data[i].Index__c = CPI_Index;
-                CPI_Index++;
-            }else if(entry.Type__c == INTEREST_RATE){
-                data[i].Index__c = Interest_Rate_Index;
-                Interest_Rate_Index++;
-            }else if(entry.Type__c == UNEMPLOYMENT){
-                data[i].Index__c = Unemploment_Index;
-                Unemploment_Index++;
+            if(entry.Type__c == type){
+                xArray.add(new List<Integer>{i});
+                yArray.add(new List<Double>{entry.Value__c});
             }
         }
+        
+        List<List<List<Object>>> output = new List<List<List<Object>>>();
+        output.add(xArray);
+        output.add(yArray);
+        
+        System.debug('Normalized Data:');
+        System.debug('xArray: ' + xArray);
+        System.debug('yArray: ' + yArray);
 
-        List<Financial_Data__c> outputList = new List<Financial_Data__c>();
-        return outputList;
+        return output;
     }
 }

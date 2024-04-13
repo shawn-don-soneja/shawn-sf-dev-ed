@@ -49,34 +49,38 @@ public class FinancialDataManager {
         List<Financial_Data__c> toInsert = new List<Financial_Data__c>();
         
         List<Financial_Data__c> cpi_data = retrieveCPI_Rice(); //CPI
-        cpi_data = filterForNewData(CPI, latestCPI, cpi_data);
-        System.debug('CPI to Insert Length:' + cpi_data.size());
-        System.debug('CPI to Insert:' + cpi_data);
-        toInsert.addAll(cpi_data);
-        //send for predictions
+        List<Financial_Data__c> cpi_data_filtered = filterForNewData(CPI, latestCPI, cpi_data);
+        System.debug('CPI to Insert Length:' + cpi_data_filtered.size());
+        System.debug('CPI to Insert:' + cpi_data_filtered);
+        toInsert.addAll(cpi_data_filtered);
+        //send for predictions on original, long list
+        FinancialDataManagerHelper.normalizeDates(cpi_data, CPI); 
         
         List<Financial_Data__c> unemployment_data = retrieveUnemployment(); //unemployment data
-        unemployment_data = filterForNewData(UNEMPLOYMENT, latestUnemployment, unemployment_data);
-        System.debug('UNEMPLOYMENT to Insert Length:' + unemployment_data.size());
-        System.debug('UNEMPLOYMENT to Insert:' + unemployment_data);
-        toInsert.addAll(unemployment_data);
-        //send for predictions
+		List<Financial_Data__c> unemployment_data_filtered = filterForNewData(UNEMPLOYMENT, latestUnemployment, unemployment_data);
+        System.debug('UNEMPLOYMENT to Insert Length:' + unemployment_data_filtered.size());
+        System.debug('UNEMPLOYMENT to Insert:' + unemployment_data_filtered);
+        toInsert.addAll(unemployment_data_filtered);
+        //send for predictions on original, long list
+        FinancialDataManagerHelper.normalizeDates(unemployment_data, UNEMPLOYMENT); 
 
         
         List<Financial_Data__c> interest_rate_data = retrieveInterestRates(); //interest rates
-        interest_rate_data = filterForNewData(INTEREST_RATE, latestInterestRates, interest_rate_data);
-        System.debug('Interest Rates to Insert Length:' + interest_rate_data.size());
-        System.debug('Interest Rates to Insert:' + interest_rate_data);
-		toInsert.addAll(interest_rate_data);
-        //send for predictions
+		List<Financial_Data__c> interest_rate_data_filtered = filterForNewData(INTEREST_RATE, latestInterestRates, interest_rate_data);
+        System.debug('Interest Rates to Insert Length:' + interest_rate_data_filtered.size());
+        System.debug('Interest Rates to Insert:' + interest_rate_data_filtered);
+		toInsert.addAll(interest_rate_data_filtered);
+        //send for predictions on original, long list
+        FinancialDataManagerHelper.normalizeDates(interest_rate_data, INTEREST_RATE); 
 
         
         List<Financial_Data__c> gdp_data = retrieveGDP();//GDP
-        gdp_data = filterForNewData(GDP, latestGDP, gdp_data);
-        System.debug('GDP to Insert Length:' + gdp_data.size());
-        System.debug('GDP to Insert:' + gdp_data);
-        toInsert.addAll(gdp_data);
-        //send for predictions
+        List<Financial_Data__c> gdp_data_filtered = filterForNewData(GDP, latestGDP, gdp_data);
+        System.debug('GDP to Insert Length:' + gdp_data_filtered.size());
+        System.debug('GDP to Insert:' + gdp_data_filtered);
+        toInsert.addAll(gdp_data_filtered);
+        //send for predictions on original, long list
+        FinancialDataManagerHelper.normalizeDates(gdp_data, GDP); 
 
         
         insert toInsert;
@@ -95,11 +99,12 @@ public class FinancialDataManager {
         return toReturn;
     }
 
-    public List<Financial_Data__c> predictOnData(List<Financial_Data__c> data){
+    public List<Financial_Data__c> predictOnData(List<List<List<Object>>> normalizedData){
         //normalize
-        List<Financial_Data__c> normalizedData = FinancialDataManagerHelper.normalizeDates(data);
+        //List<Financial_Data__c> normalizedData = FinancialDataManagerHelper.normalizeDates(data);
 
         //request for predictions
+        //uses Service Class, to deliver Payload and Receive Response
 
         //return list of predictions to be inserted
         List<Financial_Data__c> outputList = new List<Financial_Data__c>();
