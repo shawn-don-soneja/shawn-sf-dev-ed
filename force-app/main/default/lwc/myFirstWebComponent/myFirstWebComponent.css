@@ -1,0 +1,7 @@
+/* child.css */
+.mycontainer {
+    width: 100%;
+    height: 100%;
+    background: blue;
+    min-width: 800px;
+}

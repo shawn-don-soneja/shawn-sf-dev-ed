@@ -1,11 +1,39 @@
 <template>
-    <lightning-card title="ContactInformation" icon-name="custom:custom14">
-        <div class="slds-m-around_medium">
-        <template for:each={contacts} for:item="contact">
-            <div key={contact.Id}>
-                {contact.Name}, {contact.Title}
-            </div>
-        </template>
+    <!-- desktop -->
+    <div class="slds-grid slds-gutters mycontainer slds-show_large">
+        <div class="slds-col slds-size_1-of-1 slds-large-size_6-of-12">
+            <lightning-card title="Inflation Rate" icon-name="utility:cart">
+                <div class="slds-m-left_medium slds-text-color_weak" >
+                    More Info<lightning-helptext content="This is data from the Bureau of Labor Statistics. Here, we're tracking the CPI of Rice in the US, which I'm using to be representative of a staple good. If this measure is going up, prices are going up, and vice versa."></lightning-helptext>
+                </div>
+                <div class="slds-grid slds-wrap slds-grid--pull-padded chart" lwc:dom="manual"></div>
+            </lightning-card>
         </div>
-    </lightning-card>
+
+        <div class="slds-col slds-size_1-of-1 slds-large-size_6-of-12">
+            <lightning-card title="Inflation Rate" icon-name="utility:cart">
+                <div class="slds-m-left_medium slds-text-color_weak" >
+                    More Info<lightning-helptext content="This is data from the Bureau of Labor Statistics. Here, we're tracking the CPI of Rice in the US, which I'm using to be representative of a staple good. If this measure is going up, prices are going up, and vice versa."></lightning-helptext>
+                </div>
+                <div class="slds-grid slds-wrap slds-grid--pull-padded chart" lwc:dom="manual"></div>
+            </lightning-card>
+        </div>
+    </div>
+    <!-- mobile -->
+    <div class="slds-grid slds-gutters mycontainer slds-hide_large">
+        <div class="slds-col slds-size_1-of-1">
+            <lightning-card title="Inflation Rate" icon-name="utility:cart">
+                <div class="slds-m-left_medium slds-text-color_weak" >
+                    More Info<lightning-helptext content="This is data from the Bureau of Labor Statistics. Here, we're tracking the CPI of Rice in the US, which I'm using to be representative of a staple good. If this measure is going up, prices are going up, and vice versa."></lightning-helptext>
+                </div>
+                <div class="slds-grid slds-wrap slds-grid--pull-padded chart" lwc:dom="manual"></div>
+            </lightning-card>
+            <lightning-card title="Inflation Rate" icon-name="utility:cart">
+                <div class="slds-m-left_medium slds-text-color_weak" >
+                    More Info<lightning-helptext content="This is data from the Bureau of Labor Statistics. Here, we're tracking the CPI of Rice in the US, which I'm using to be representative of a staple good. If this measure is going up, prices are going up, and vice versa."></lightning-helptext>
+                </div>
+                <div class="slds-grid slds-wrap slds-grid--pull-padded chart" lwc:dom="manual"></div>
+            </lightning-card>
+        </div>
+    </div>
 </template>
