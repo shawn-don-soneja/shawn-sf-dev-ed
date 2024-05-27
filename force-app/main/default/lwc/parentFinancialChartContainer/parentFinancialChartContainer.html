@@ -45,4 +45,12 @@
         
         
     </div>
+    <div if:false={isLoading} style="width:600px;">
+        <lightning-card title="Last Refresed On">
+            <div class="slds-m-left_medium slds-text-color_weak" >
+                {lastModifiedDate}
+            </div>
+            <div class="slds-grid slds-wrap slds-grid--pull-padded interestratechart" lwc:dom="manual"></div>
+        </lightning-card>
+    </div>
 </template>

@@ -224,6 +224,7 @@ export default class ParentFinancialChartContainer extends LightningElement {
             },
         }
     }
+    @track lastModifiedDate;
     
     //@track interestRateData;
     //@track gdpData;
@@ -237,6 +238,7 @@ export default class ParentFinancialChartContainer extends LightningElement {
                 console.log('sorted data length before filter: ' + sortedData.length);
                 sortedData.sort((a,b) => (a.Date__c > b.Date__c) ? 1 : ((b.Date__c > a.Date__c) ? -1 : 0));
                 sortedData = sortedData.filter((item) => item.Date__c > '2021-01-01' );
+                this.lastModifiedDate = sortedData[sortedData.length - 1].Date__c;
                 console.log('sorted data length after filter: ' + sortedData.length);
                 //format the data to pass to child charts
                 var unemploymentDataPoints = [];
