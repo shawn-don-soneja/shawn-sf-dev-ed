@@ -30,8 +30,9 @@ public class FinancialDataManagerPredictionService {
         
         Id archivedRecordType = recordTypeInfoMap.get('Archived Prediction').getRecordTypeId();
         Id predictionRecordType = recordTypeInfoMap.get('Prediction').getRecordTypeId();
+        System.debug('Record Types: ' + predictionRecordType + ' | ' + archivedRecordType);
         
-        List<Financial_Data__c> gdpData = [SELECT Id, Value__c, Date__c FROM Financial_Data__c WHERE Type__c = 'GDP' ORDER BY Date__c ASC];
+        List<Financial_Data__c> gdpData = [SELECT Id, Value__c, Date__c FROM Financial_Data__c WHERE Type__c = 'GDP' AND RecordType.Name = 'Active' ORDER BY Date__c ASC];
         Date mostRecentgdpDate = gdpData[gdpData.size()-1].Date__c;
         
         Http http = new Http();
@@ -52,7 +53,13 @@ public class FinancialDataManagerPredictionService {
         System.debug('response' + response);
         
         if (response.getStatusCode() == 200) {
+            AutomatedProcessLog__c resultLog = new AutomatedProcessLog__c(Status__c='Success',Log__c=response.getBody());
+            //String trimmedBody = response.getBody().length() > 255 ? response.getBody().substring(0, 255) : response.getBody();
+            //resultLog.Log_Short__c = trimmedBody;
+            insert resultLog;
+            
             //Successfully received a response
+            System.debug('response' + response);
             System.debug('response BODY' + response.getBody());
             
             //Parse out needed data
@@ -73,19 +80,20 @@ public class FinancialDataManagerPredictionService {
                 System.debug('Exact Value: ' + predictionValueParsed[0]);
                 Decimal formattedValue = (Decimal) predictionValueParsed[0];
                 mostRecentgdpDate = mostRecentgdpDate.addMonths(3);
-                financialDataToInsert.add(new Financial_Data__c(Value__c = formattedValue, Type__c = 'GDP', Date__c = mostRecentgdpDate)); // need to assign correct date...
+                financialDataToInsert.add(new Financial_Data__c(Value__c = formattedValue.round(), Type__c = 'GDP', Date__c = mostRecentgdpDate, RecordTypeId=predictionRecordType)); // need to assign correct date...
                 // date will be next 'increment' after most recent data...
             }
             
             System.debug('Data to Insert: ' + financialDataToInsert);
 
             //archive all existing predictions
-            List<Financial_Data__c> dataToInsertUpdates = [SELECT Id, Value__c FROM Financial_Data__c WHERE RecordType.Name = 'Prediction'];
-            for(Financial_Data__c record : dataToInsertUpdates){
+            List<Financial_Data__c> dataToArchive = [SELECT Id, Value__c FROM Financial_Data__c WHERE RecordType.Name = 'Prediction'];
+            for(Financial_Data__c record : dataToArchive){
                 record.RecordTypeId = archivedRecordType;
+                financialDataToInsert.add(record);
             }
-            
-            
+
+            upsert financialDataToInsert;            
             
             //for each prediction, create a new record, with the appropriate date value (3 mo increment) and record type (prediction)
             //also set old predictions to record type of 'archived'
