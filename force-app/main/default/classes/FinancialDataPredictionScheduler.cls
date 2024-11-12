@@ -5,6 +5,6 @@ global class FinancialDataPredictionScheduler implements Schedulable{
         
         // Example: Query accounts and update a field
         //FinancialDataManager fdm = new FinancialDataManager();
-        FinancialDataManagerPredictionService.predictOnData();
+        FinancialDataPredictionService.predictOnData();
     }
 }

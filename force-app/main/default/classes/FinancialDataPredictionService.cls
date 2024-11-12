@@ -1,4 +1,4 @@
-public class FinancialDataManagerPredictionService {
+public class FinancialDataPredictionService {
 	//to be invoked by scheduler
 	
 	/*
