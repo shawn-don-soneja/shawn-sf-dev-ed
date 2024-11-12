@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All</fullName>
+    <columns>NAME</columns>
+    <columns>Date__c</columns>
+    <columns>Type__c</columns>
+    <columns>Sub_Type__c</columns>
+    <columns>Value__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Type__c</field>
+        <operation>equals</operation>
+        <value>GDP</value>
+    </filters>
+    <label>All</label>
+</ListView>
