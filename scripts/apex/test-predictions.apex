@@ -1,0 +1,1 @@
+FinancialDataPredictionService.predictOnData();

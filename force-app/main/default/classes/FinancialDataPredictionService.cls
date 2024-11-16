@@ -19,22 +19,43 @@ public class FinancialDataPredictionService {
     public static List<String> dataTypesToPredictOn = new List<String>{'GDP', 'Interest Rates', 'Unemployment', 'Inflation'};
     
     public static void predictOnData(){
-        for(String item : dataTypesToPredictOn){
-            System.debug(item);
-        }
-        
+        //prepare data
         Map<String, Schema.RecordTypeInfo> recordTypeInfoMap = Schema.getGlobalDescribe()
         .get('Financial_Data__c')
         .getDescribe()
         .getRecordTypeInfosByName();
-        
+
         Id archivedRecordType = recordTypeInfoMap.get('Archived Prediction').getRecordTypeId();
         Id predictionRecordType = recordTypeInfoMap.get('Prediction').getRecordTypeId();
         System.debug('Record Types: ' + predictionRecordType + ' | ' + archivedRecordType);
+
+        List<Financial_Data__c> dataToUpsert = new List<Financial_Data__c>();
+
+        for(Integer i = 0; i < dataTypesToPredictOn.size(); i++){
+            String dataType = dataTypesToPredictOn[i];
+            //retrieve data
+            List<Financial_Data__c> requestData = [SELECT Id, Value__c, Date__c FROM Financial_Data__c WHERE Type__c = :dataType AND RecordType.Name = 'Active' ORDER BY Date__c ASC];
+            Date mostRecentDate;
+            if(requestData.size() > 0){
+                mostRecentDate = requestData[0].Date__c;
+            }else{
+                mostRecentDate = Date.newInstance(2024, 11, 11); // November 11, 2024
+
+            }
+
+            System.debug(dataType);
+            //prepares payload and sends request
+            HttpResponse response = sendRequest(requestData);
+            List<Financial_Data__c> responseData = processResponse(response, dataType, mostRecentDate, archivedRecordType, predictionRecordType);
+            dataToUpsert.addAll(responseData);
+        }
         
-        List<Financial_Data__c> gdpData = [SELECT Id, Value__c, Date__c FROM Financial_Data__c WHERE Type__c = 'GDP' AND RecordType.Name = 'Active' ORDER BY Date__c ASC];
-        Date mostRecentgdpDate = gdpData[gdpData.size()-1].Date__c;
-        
+        //upsert all data
+        System.debug('Data to Upsert: ' + dataToUpsert);
+    }
+
+    private static HttpResponse sendRequest(List<Financial_Data__c> requestData){
+        //prepare request
         Http http = new Http();
         HttpRequest request = new HttpRequest();
         String api_key = API_Keys__mdt.getInstance('AWS_Prediction_Service').Key__c;
@@ -44,19 +65,26 @@ public class FinancialDataPredictionService {
         request.setHeader('x-api-key',api_key);
         request.setHeader('Content-Type', 'application/json');
         
-        String payload = preparePayload(gdpData);
+        //preparePayload()
+        String payload = preparePayload(requestData);
         System.debug('Payload: ' + payload);
         
+        //initiate request
         request.setBody(payload);
                      
 		HttpResponse response = http.send(request);
         System.debug('response' + response);
-        
+        return response;
+    }
+    
+    private static List<Financial_Data__c> processResponse(HttpResponse response, String dataType, Date mostRecentDate, Id archivedRecordTypeId, Id predictionRecordTypeId){
+
+        //handle new predictions, by preparing them as a list
+        List<Financial_Data__c> financialDataToInsert = new List<Financial_Data__c>();
+		
         if (response.getStatusCode() == 200) {
             AutomatedProcessLog__c resultLog = new AutomatedProcessLog__c(Status__c='Success',Log__c=response.getBody());
-            //String trimmedBody = response.getBody().length() > 255 ? response.getBody().substring(0, 255) : response.getBody();
-            //resultLog.Log_Short__c = trimmedBody;
-            insert resultLog;
+            //insert resultLog;
             
             //Successfully received a response
             System.debug('response' + response);
@@ -72,16 +100,18 @@ public class FinancialDataPredictionService {
             
             System.debug('Predictions, Length: ' + predictions.size());
             
-            //handle new predictions, by preparing them as a list
-            List<Financial_Data__c> financialDataToInsert = new List<Financial_Data__c>();
+            
             for(Object prediction : predictions){
                 System.debug('Value: ' + prediction);
                 List<Object> predictionValueParsed = (List<Object>) prediction;
                 System.debug('Exact Value: ' + predictionValueParsed[0]);
                 Decimal formattedValue = (Decimal) predictionValueParsed[0];
-                mostRecentgdpDate = mostRecentgdpDate.addMonths(3);
-                financialDataToInsert.add(new Financial_Data__c(Value__c = formattedValue.round(), Type__c = 'GDP', Date__c = mostRecentgdpDate, RecordTypeId=predictionRecordType)); // need to assign correct date...
-                // date will be next 'increment' after most recent data...
+                if(dataType == 'GDP'){
+                    mostRecentDate = mostRecentDate.addMonths(3); //each data point is quarterly
+                }else{
+                    mostRecentDate = mostRecentDate.addMonths(1); //all other data points are monthly
+                }
+                financialDataToInsert.add(new Financial_Data__c(Value__c = formattedValue.round(), Type__c = dataType, Date__c = mostRecentDate, RecordTypeId=predictionRecordTypeId));
             }
             
             System.debug('Data to Insert: ' + financialDataToInsert);
@@ -89,30 +119,17 @@ public class FinancialDataPredictionService {
             //archive all existing predictions
             List<Financial_Data__c> dataToArchive = [SELECT Id, Value__c FROM Financial_Data__c WHERE RecordType.Name = 'Prediction'];
             for(Financial_Data__c record : dataToArchive){
-                record.RecordTypeId = archivedRecordType;
+                record.RecordTypeId = archivedRecordTypeId;
                 financialDataToInsert.add(record);
-            }
-
-            upsert financialDataToInsert;            
-            
-            //for each prediction, create a new record, with the appropriate date value (3 mo increment) and record type (prediction)
-            //also set old predictions to record type of 'archived'
-            
-            //for GDP, increment all predictions by 3 months (quarterly)
-            //for all others, increment predictions by 1 month
-            
-            
-            System.debug(archivedRecordType);
-           
+            }           
         } else {
             // Handle non-200 response codes
             System.debug('Error: ' + response.getStatusCode() + ' - ' + response.getStatus());
         }
         
-        
-
+        return financialDataToInsert;
     }
-    
+
     public static String preparePayload(List<Financial_Data__c> dataForPayload){
                                               
         List<List<Object>> x_Array = new List<List<Object>>();
