@@ -38,7 +38,7 @@ public class FinancialDataPredictionService {
         Id predictionRecordType = recordTypeInfoMap.get('Prediction').getRecordTypeId();
         System.debug('Record Types: ' + predictionRecordType + ' | ' + archivedRecordType);
 		
-        //Prepare For Data
+        //Prepare active (actual) metrics, to be predicted on
         List<Financial_Data__c> dataToUpsert = new List<Financial_Data__c>();
         List<AutomatedProcessLog__c> loggersToUpsert = new List<AutomatedProcessLog__c>();
         
@@ -53,6 +53,20 @@ public class FinancialDataPredictionService {
 			else if(record.Type__c == 'Unemployment') unemploymentData.add(record);
             else if(record.Type__c == 'Interest Rate') interestRateData.add(record);
             else if(record.Type__c == 'CPI') cpiData.add(record);
+        }
+        
+        //Grab legacy predictions, so we can archive them (if we recieved new predictions for that data type)
+        List<Financial_Data__c> gdpData_existingPredictions = new List<Financial_Data__c>();
+		List<Financial_Data__c> unemploymentData_existingPredictions = new List<Financial_Data__c>();
+        List<Financial_Data__c> interestRateData_existingPredictions = new List<Financial_Data__c>();
+        List<Financial_Data__c> cpiData_existingPredictions = new List<Financial_Data__c>();
+        
+        List<Financial_Data__c> existingPredictionData = [SELECT Id, Value__c, Date__c, Type__c FROM Financial_Data__c WHERE RecordType.Name = 'Prediction' ORDER BY Date__c ASC];
+        for (Financial_Data__c record : existingPredictionData){
+        	if(record.Type__c == 'GDP') gdpData_existingPredictions.add(record);
+			else if(record.Type__c == 'Unemployment') unemploymentData_existingPredictions.add(record);
+            else if(record.Type__c == 'Interest Rate') interestRateData_existingPredictions.add(record);
+            else if(record.Type__c == 'CPI') cpiData_existingPredictions.add(record);
         }
 
 		Boolean predictOnGDP = true;
@@ -73,6 +87,15 @@ public class FinancialDataPredictionService {
                 HttpResponse response = sendRequest(gdpData); // <--- initiates request, formats payload
                 List<Financial_Data__c> responseData = processResponse(response, 'GDP', mostRecentDate, archivedRecordType, predictionRecordType); // <--- receives response, returns objects to insert (log + financial data);
                 dataToUpsert.addAll(responseData);
+                
+                //if there are new predictions, then archive the old ones for this data type
+                if(responseData.size() > 0){
+                    //archive all existing predictions
+                    for(Financial_Data__c record : gdpData_existingPredictions){
+                        record.RecordTypeId = archivedRecordType;
+                        dataToUpsert.add(record);
+                    }          
+                }
             }
 
                 
@@ -87,6 +110,15 @@ public class FinancialDataPredictionService {
                 HttpResponse response = sendRequest(unemploymentData); // <--- initiates request, formats payload
                 List<Financial_Data__c> responseData = processResponse(response, 'Unemployment', mostRecentDate, archivedRecordType, predictionRecordType); // <--- receives response, returns objects to insert (log + financial data);
                 dataToUpsert.addAll(responseData);
+                
+                //if there are new predictions, then archive the old ones for this data type
+                if(responseData.size() > 0){
+                    //archive all existing predictions
+                    for(Financial_Data__c record : unemploymentData_existingPredictions){
+                        record.RecordTypeId = archivedRecordType;
+                        dataToUpsert.add(record);
+                    }          
+                }
             }
                 
                 
@@ -101,6 +133,15 @@ public class FinancialDataPredictionService {
                 HttpResponse response = sendRequest(interestRateData); // <--- initiates request, formats payload
                 List<Financial_Data__c> responseData = processResponse(response, 'Interest Rate', mostRecentDate, archivedRecordType, predictionRecordType); // <--- receives response, returns objects to insert (log + financial data);
                 dataToUpsert.addAll(responseData);
+                
+                //if there are new predictions, then archive the old ones for this data type
+                if(responseData.size() > 0){
+                    //archive all existing predictions
+                    for(Financial_Data__c record : interestRateData_existingPredictions){
+                        record.RecordTypeId = archivedRecordType;
+                        dataToUpsert.add(record);
+                    }          
+                }
             }
                 
             if ( predictOnCpi ){
@@ -114,6 +155,15 @@ public class FinancialDataPredictionService {
                 HttpResponse response = sendRequest(cpiData); // <--- initiates request, formats payload
                 List<Financial_Data__c> responseData = processResponse(response, 'CPI', mostRecentDate, archivedRecordType, predictionRecordType); // <--- receives response, returns objects to insert (log + financial data);
                 dataToUpsert.addAll(responseData);
+                
+                //if there are new predictions, then archive the old ones for this data type
+                if(responseData.size() > 0){
+                    //archive all existing predictions
+                    for(Financial_Data__c record : cpiData_existingPredictions){
+                        record.RecordTypeId = archivedRecordType;
+                        dataToUpsert.add(record);
+                    }          
+                }
             }
               
             System.debug('Total Data To Upsert: ' + dataToUpsert.size());
@@ -127,37 +177,6 @@ public class FinancialDataPredictionService {
             	//insert logger;
             	System.debug('Error: ' + e.getMessage());
         }
-        /*
-		new code
-
-
-
-for(Integer i = 0; i < dataTypesToPredictOn.size(); i++){
-            String dataType = dataTypesToPredictOn[i];
-            //retrieve data
-            List<Financial_Data__c> requestData = [SELECT Id, Value__c, Date__c FROM Financial_Data__c WHERE Type__c = :dataType AND RecordType.Name = 'Active' ORDER BY Date__c ASC];
-            Date mostRecentDate;
-            if(requestData.size() > 0){
-                mostRecentDate = requestData[0].Date__c; //we need this, so we can write back PREDICTIONS with the appropriate future dates
-            }else{
-                mostRecentDate = Date.newInstance(2024, 11, 11); // November 11, 2024
-
-            }
-
-            System.debug(dataType);
-            
-            //prepares payload and sends request
-            HttpResponse response = sendRequest(requestData);
-            List<Financial_Data__c> responseData = processResponse(response, dataType, mostRecentDate, archivedRecordType, predictionRecordType);
-            dataToUpsert.addAll(responseData);
-        }
-        System.debug('Data to Upsert: ' + dataToUpsert);
-		*/
-
-        
-        
-        //upsert all data
-
     }
 
     private static HttpResponse sendRequest(List<Financial_Data__c> requestData){
@@ -217,17 +236,11 @@ for(Integer i = 0; i < dataTypesToPredictOn.size(); i++){
                 }else{
                     mostRecentDate = mostRecentDate.addMonths(1); //all other data points are monthly
                 }
-                financialDataToReturn.add(new Financial_Data__c(Value__c = formattedValue.round(), Type__c = dataType, Date__c = mostRecentDate, RecordTypeId=predictionRecordTypeId));
+                financialDataToReturn.add(new Financial_Data__c(Value__c = formattedValue.setScale(3, RoundingMode.HALF_UP), Type__c = dataType, Date__c = mostRecentDate, RecordTypeId=predictionRecordTypeId));
             }
             
             //System.debug('Data to Insert: ' + financialDataToReturn);
 
-            //archive all existing predictions
-            List<Financial_Data__c> dataToArchive = [SELECT Id, Value__c FROM Financial_Data__c WHERE RecordType.Name = 'Prediction'];
-            for(Financial_Data__c record : dataToArchive){
-                record.RecordTypeId = archivedRecordTypeId;
-                financialDataToReturn.add(record);
-            }           
         } else {
             // Handle non-200 response codes
             System.debug('Error: ' + response.getStatusCode() + ' - ' + response.getStatus());
