@@ -8,9 +8,9 @@ public class FinancialDataManager {
     public static List<Financial_Data__c> getFinancialData(String dataType){
         List<Financial_Data__c> output;
         if(dataType != null){
-            output = [SELECT Id, Type__c, Value__c, Date__c FROM Financial_Data__c WHERE Type__c = :dataType];
+            output = [SELECT Id, Type__c, Value__c, Date__c FROM Financial_Data__c WHERE Type__c = :dataType AND RecordType.Name = 'Active'];
         }else{
-            output = [SELECT Id, Type__c, Value__c, Date__c FROM Financial_Data__c];
+            output = [SELECT Id, Type__c, Value__c, Date__c FROM Financial_Data__c WHERE RecordType.Name = 'Active'];
         }
         return output;
     }
