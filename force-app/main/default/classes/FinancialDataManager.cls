@@ -18,7 +18,12 @@ public class FinancialDataManager {
     //Data Refresher
     @future(callout=true)
     public static void refreshAllFinancialData(){
-        List<Financial_Data__c> allData = [SELECT Id, Type__c, Value__c, Date__c FROM Financial_Data__c ORDER BY Date__c DESC];
+        List<Financial_Data__c> allData = [
+            SELECT Id, Type__c, Value__c, Date__c 
+            FROM Financial_Data__c
+            WHERE RecordType.Name = 'Active' 
+            ORDER BY Date__c DESC
+        ];
         AutomatedProcessLog__c logToInsert = new AutomatedProcessLog__c(Status__c='Retrieval Status');
         
         //data we need, to figure out what data from the API should be inserted into DB
