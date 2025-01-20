@@ -119,7 +119,7 @@ public class FinancialDataPredictionService {
 
         loggersToUpsert.add(toPredictLog);
         
-        AutomatedProcessLog__c processingLog = new AutomatedProcessLog__c(Status__c='Processing Status',Log__c='==');
+        AutomatedProcessLog__c processingLog = new AutomatedProcessLog__c(Status__c='Prediction Processing Status',Log__c='==');
         
         try{
             
