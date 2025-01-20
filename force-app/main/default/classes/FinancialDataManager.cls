@@ -19,6 +19,7 @@ public class FinancialDataManager {
     @future(callout=true)
     public static void refreshAllFinancialData(){
         List<Financial_Data__c> allData = [SELECT Id, Type__c, Value__c, Date__c FROM Financial_Data__c ORDER BY Date__c DESC];
+        AutomatedProcessLog__c logToInsert = new AutomatedProcessLog__c(Status__c='Retrieval Status');
         
         //data we need, to figure out what data from the API should be inserted into DB
         //we only insert data points which are NEWER than those we have stored in the DB
@@ -52,16 +53,18 @@ public class FinancialDataManager {
         System.debug('CPI to Insert Length:' + cpi_data_filtered.size());
         System.debug('CPI to Insert:' + cpi_data_filtered);
         toInsert.addAll(cpi_data_filtered);
+        logToInsert.Log__c += '_cpiDataReceived=' + cpi_data.size();
         //send for predictions on original, long list
-        FinancialDataManagerHelper.normalizeDates(cpi_data, CPI); 
+        //FinancialDataManagerHelper.normalizeDates(cpi_data, CPI); 
         
         List<Financial_Data__c> unemployment_data = retrieveUnemployment(); //unemployment data
 		List<Financial_Data__c> unemployment_data_filtered = filterForNewData(UNEMPLOYMENT, latestUnemployment, unemployment_data);
         System.debug('UNEMPLOYMENT to Insert Length:' + unemployment_data_filtered.size());
         System.debug('UNEMPLOYMENT to Insert:' + unemployment_data_filtered);
         toInsert.addAll(unemployment_data_filtered);
+        logToInsert.Log__c += '_unemploymentDataReceived=' + unemployment_data.size();
         //send for predictions on original, long list
-        FinancialDataManagerHelper.normalizeDates(unemployment_data, UNEMPLOYMENT); 
+        //FinancialDataManagerHelper.normalizeDates(unemployment_data, UNEMPLOYMENT); 
 
         
         List<Financial_Data__c> interest_rate_data = FinancialDataManager.retrieveInterestRates(); //interest rates
@@ -69,8 +72,9 @@ public class FinancialDataManager {
         System.debug('Interest Rates to Insert Length:' + interest_rate_data_filtered.size());
         System.debug('Interest Rates to Insert:' + interest_rate_data_filtered);
 		toInsert.addAll(interest_rate_data_filtered);
+        logToInsert.Log__c += '_interestRateDataReceived=' + interest_rate_data.size();
         //send for predictions on original, long list
-        FinancialDataManagerHelper.normalizeDates(interest_rate_data, INTEREST_RATE); 
+        //FinancialDataManagerHelper.normalizeDates(interest_rate_data, INTEREST_RATE); 
 
         
         List<Financial_Data__c> gdp_data = FinancialDataManager.retrieveGDP();//GDP
@@ -78,11 +82,13 @@ public class FinancialDataManager {
         System.debug('GDP to Insert Length:' + gdp_data_filtered.size());
         System.debug('GDP to Insert:' + gdp_data_filtered);
         toInsert.addAll(gdp_data_filtered);
+        logToInsert.Log__c += '_gdpDataReceived=' + gdp_data.size();
         //send for predictions on original, long list
-        FinancialDataManagerHelper.normalizeDates(gdp_data, GDP); 
+        //FinancialDataManagerHelper.normalizeDates(gdp_data, GDP); 
 
         
         insert toInsert;
+        insert logToInsert;
     }
     
     public static List<Financial_Data__c> filterForNewData (String dataType, Date latestDate, List<Financial_Data__c> data){
