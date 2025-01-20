@@ -59,6 +59,9 @@ public class FinancialDataManager {
         System.debug('CPI to Insert:' + cpi_data_filtered);
         toInsert.addAll(cpi_data_filtered);
         logToInsert.Log__c += '_cpiDataReceived=' + cpi_data.size();
+        if(cpi_data_filtered.size() > 0){
+            logToInsert.Log__c += '_INSERTING CPI';
+        }
         //send for predictions on original, long list
         //FinancialDataManagerHelper.normalizeDates(cpi_data, CPI); 
         
@@ -68,6 +71,9 @@ public class FinancialDataManager {
         System.debug('UNEMPLOYMENT to Insert:' + unemployment_data_filtered);
         toInsert.addAll(unemployment_data_filtered);
         logToInsert.Log__c += '_unemploymentDataReceived=' + unemployment_data.size();
+        if(unemployment_data_filtered.size() > 0){
+            logToInsert.Log__c += '_INSERTING UNEMPLOYMENT_';
+        }
         //send for predictions on original, long list
         //FinancialDataManagerHelper.normalizeDates(unemployment_data, UNEMPLOYMENT); 
 
@@ -78,6 +84,9 @@ public class FinancialDataManager {
         System.debug('Interest Rates to Insert:' + interest_rate_data_filtered);
 		toInsert.addAll(interest_rate_data_filtered);
         logToInsert.Log__c += '_interestRateDataReceived=' + interest_rate_data.size();
+        if(interest_rate_data_filtered.size() > 0){
+            logToInsert.Log__c += '_INSERTING INTEREST RATES_';
+        }
         //send for predictions on original, long list
         //FinancialDataManagerHelper.normalizeDates(interest_rate_data, INTEREST_RATE); 
 
@@ -88,6 +97,9 @@ public class FinancialDataManager {
         System.debug('GDP to Insert:' + gdp_data_filtered);
         toInsert.addAll(gdp_data_filtered);
         logToInsert.Log__c += '_gdpDataReceived=' + gdp_data.size();
+        if(gdp_data_filtered.size() > 0){
+            logToInsert.Log__c += '_INSERTING GDP';
+        }
         //send for predictions on original, long list
         //FinancialDataManagerHelper.normalizeDates(gdp_data, GDP); 
 
