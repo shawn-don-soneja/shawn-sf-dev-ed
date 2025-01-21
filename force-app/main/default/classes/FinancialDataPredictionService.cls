@@ -27,6 +27,7 @@ public class FinancialDataPredictionService {
     }
 	*/
     
+    @future(callout=true)
     public static void predictOnData(){
         //Grab Record Type Info
         Map<String, Schema.RecordTypeInfo> recordTypeInfoMap = Schema.getGlobalDescribe()
