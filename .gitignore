@@ -8,6 +8,9 @@
 .localdevserver/
 deploy-options.json
 
+# Named Credentials
+force-app/main/default/namedCredentials/
+
 # LWC VSCode autocomplete
 **/lwc/jsconfig.json
 
